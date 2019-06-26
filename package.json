@@ -1,0 +1,11 @@
+{
+  "name": "socket1",
+  "version": "1.0.0",
+  "description": "websockets example 1",
+  "private": true,
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "4",
+    "socket.io": "1"
+  }
+}

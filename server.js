@@ -1,7 +1,7 @@
 "use strict";
 
 const IP = "127.0.0.1";
-const PORT = 8081;
+const PORT = process.env.PORT || 8081;
 
 const express = require("express");
 const app = express();

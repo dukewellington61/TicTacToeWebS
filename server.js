@@ -81,7 +81,7 @@ io.on("connection", socket => {
 
       io.emit("Am Zug: ...", startPlayer);
 
-      if (message === 'Spiel beendet: Spieler X hat gewonnen!' || message === 'Spiel beendet: Spieler O hat gewonnen!' || message === 'Spiel endet unentschieden!') {
+      if (message === 'Spiel beendet: Spieler X hat das Spiel gewonnen!' || message === 'Spiel beendet: Spieler O hat gewonnen!' || message === 'Spiel endet unentschieden!') {
         io.emit('endMessage',message);     
         clients[0].emit('disableClient0');
         clients[1].emit('disableClient1');

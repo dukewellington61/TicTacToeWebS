@@ -2,8 +2,13 @@ table {
   border-collapse: collapse;
 }
 
-button {
+.button {
   height: 100px;
   width: 100px;
   vertical-align:bottom;
+  font-size: 3em;
 }
+
+/* #start-button {
+  display: none;
+} */

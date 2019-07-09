@@ -9,7 +9,7 @@ const winCombos = [
   [6, 4, 2]
 ];
 
-let moveArray = [];
+
 
 const start = () => {
   let randomNumber = Math.round(Math.random() * 1);
@@ -29,13 +29,12 @@ const secondPlayer = second();
 exports.Game = function Game(player) {
 
    gameObject = {
+     emptyGameField: ["","","","","","","","",""],
      gameField: ["","","","","","","","",""],
      currentPlayer: startPlayer,
      secondPlayer: secondPlayer,
      result: "",
      move: (symbol,field) => {
-
-
 
          if (gameObject.gameField[field] === symbol) return 'Ungueltiger Zug: X ist nicht am Zug!';
 
@@ -56,7 +55,6 @@ exports.Game = function Game(player) {
            const numberOfSymbolsOnGameField = gameObject.gameField.filter(x => x != "").length;
 
            numberOfSymbolsOnGameField === 9 ? gameObject.result = 'done' : gameObject.result = symbol;
-
 
            if (gameObject.result === 'done') {
              for (let [index,win] of winCombos.entries()) {

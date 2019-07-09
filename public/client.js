@@ -26,9 +26,11 @@ const viewTikTakToe = () => {
         <button class='button' id='8'></button>
         <br>
 
-    </table>
+    </table>        
 
     <div id="info3"></div>
+
+    <button type="button" id="start-button" class="btn btn-secondary">New Game</button>
     `
   )};
 
@@ -77,6 +79,8 @@ const endMessage = (message) => $("#info2").innerHTML = message;
 
 const emptyInfo3 = () => $("#info3").innerHTML = "";
 
+const emptyInfo2 = () => $("#info2").innerHTML = "";
+
 const viewerMessage = () =>  {
   $("#info1").innerHTML = 'Sie befinden sich im Zuschauer­Modus!';
   $("#info3").innerHTML = 'Sorry, es waren bereits genug Spieler online.';
@@ -84,12 +88,23 @@ const viewerMessage = () =>  {
 
 const emptyInfo3Viewers = () => $("#info3").innerHTML = "";
 
+const hideStartButton = () => $('#start-button').setAttribute('hidden', 'true');
+
+const showStartButton = () => $('#start-button').removeAttribute('hidden');
+
+const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your Opponent has fled the Battlefield.";
+
+const messageGameStarted = () => $("#info3").innerHTML = "The Game has started.";
 
 
 let socket = io.connect();
 
 
-socket.on("push", () => viewTikTakToe());
+socket.on('push', () => viewTikTakToe());
+
+socket.on('hide-start-button', () => hideStartButton());
+
+socket.on('show-start-button', () => showStartButton());
 
 socket.on('messageWait', () => messageWait());
 
@@ -97,7 +112,9 @@ socket.on('messageStart', () => messageStart());
 
 socket.on('startPlayer', (startPlayer) => startPlayerInfo(startPlayer));
 
-socket.on('secondPlayer', (startPlayer) => secondPlayerInfo(startPlayer));
+socket.on('secondPlayer', (startPlayer) => {
+  secondPlayerInfo(startPlayer);
+});
 
 socket.on("Am Zug: ...", (startPlayer) => amZug(startPlayer));
 
@@ -113,10 +130,27 @@ socket.on('disableClient1', () => disableClient1());
 
 socket.on('enableClient1', () => enableClient1());
 
-socket.on('endMessage', (message) => endMessage(message));
+socket.on('endMessage', (message) => {
+  endMessage(message);
+  showStartButton();
+  disableClient0();
+  disableClient1();
+});
 
 socket.on('emptyInfo3', () => emptyInfo3());
 
+socket.on('emptyInfo2', () => emptyInfo2());
+
 socket.on('viewerMessage', () => viewerMessage());
 
-$("#TikTakToe").addEventListener("click", (e) => socket.emit("move", e.path[0].id));
+socket.on('messagePlayerDisconnected', () => messagePlayerDisconnected());
+
+socket.on('game-has-started', () => messageGameStarted());
+
+
+$("#TikTakToe").addEventListener("click", (e) => e.path[0].id === "start-button" ? socket.emit("newGame") : socket.emit("move", e.path[0].id));
+
+
+
+
+

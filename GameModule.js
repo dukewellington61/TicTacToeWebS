@@ -36,8 +36,6 @@ exports.Game = function Game(player) {
      result: "",
      move: (symbol,field) => {
 
-         if (gameObject.gameField[field] === symbol) return 'Ungueltiger Zug: X ist nicht am Zug!';
-
          if (gameObject.gameField[field] != "") return 'Ungueltiger Zug: Feld 2 ist nicht frei!';
 
          if (gameObject.gameField[field] === "") {
@@ -64,7 +62,6 @@ exports.Game = function Game(player) {
                else return 'Spiel endet unentschieden!'
              };
            };
-
 
            return "";
          };

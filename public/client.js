@@ -131,9 +131,18 @@ socket.on('disableClient1', () => disableClient1());
 socket.on('enableClient1', () => enableClient1());
 
 socket.on('endMessage', (message) => {
-  endMessage(message);
-  showStartButton();
-  disableClient0();
+  endMessage(message);  
+});
+
+socket.on('endMessage', (message) => {  
+  showStartButton();  
+});
+
+socket.on('endMessage', (message) => {  
+  disableClient0();  
+});
+
+socket.on('endMessage', (message) => {  
   disableClient1();
 });
 

@@ -35,9 +35,7 @@ exports.Game = function Game(player) {
      secondPlayer: secondPlayer,
      result: "",
      move: (symbol,field) => {
-
-         if (gameObject.gameField[field] != "") return 'Ungueltiger Zug: Feld 2 ist nicht frei!';
-
+         
          if (gameObject.gameField[field] === "") {
            gameObject.gameField[field] = symbol;
 

@@ -5,6 +5,7 @@ const viewTikTakToe = () => {
 
   return $("#TikTakToe").innerHTML = ejs.render(
     `
+    <div id="gamefield">
     <div class="info"><span id="info1">info1</span> <span id="info2">info2</span></div>
 
     <table>
@@ -26,21 +27,22 @@ const viewTikTakToe = () => {
 
     <div id="info3" class="info"></div>
     <button type="button" id="start-button" class="btn btn-secondary">New Game</button>
+    </div>
     `
   )};
 
   
-const messageWait = () => $("#info3").innerHTML = "Bitte warten Sie auf Ihren Gegner!";
+const messageWait = () => $("#info3").innerHTML = "Please wait for your opponent";
 
-const messageStart = () => $("#info3").innerHTML = "Zwei Spieler verbunden. Spiel kann beginnen!";
+const messageStart = () => $("#info3").innerHTML = "Two players connected. ";
 
-const startPlayerInfo = startPlayer => $("#info1").innerHTML = `Sie spielen als ${startPlayer}`;
+const startPlayerInfo = startPlayer => $("#info1").innerHTML = `You're playing as ${startPlayer}.`;
 
 const secondPlayerInfo = startPlayer =>
-startPlayer === 'X' ? $("#info1").innerHTML = "Sie spielen als O"
-: $("#info1").innerHTML = "Sie spielen als X";
+startPlayer === 'X' ? $("#info1").innerHTML = "You're playing as O"
+: $("#info1").innerHTML = "You're playing as X";
 
-const amZug = startPlayer => $("#info2").innerHTML = `Am Zug: ${startPlayer}`;
+const amZug = startPlayer => $("#info2").innerHTML = `Player ${startPlayer}'s turn`;
 
 const writeSymbolInGamefield = (symbol,field) => document.getElementById(field).textContent = symbol;  
 
@@ -85,8 +87,8 @@ const emptyInfo3 = () => $("#info3").innerHTML = "";
 const emptyInfo2 = () => $("#info2").innerHTML = "";
 
 const viewerMessage = () =>  {
-  $("#info1").innerHTML = 'Sie befinden sich im Zuschauer­Modus!';
-  $("#info3").innerHTML = 'Sorry, es waren bereits genug Spieler online.';
+  $("#info1").innerHTML = "You're in observer mode";
+  $("#info3").innerHTML = 'Sorry, there are two players already.';
 };
 
 const emptyInfo3Viewers = () => $("#info3").innerHTML = "";
@@ -95,9 +97,9 @@ const hideStartButton = () => $('#start-button').setAttribute('hidden', 'true');
 
 const showStartButton = () => $('#start-button').removeAttribute('hidden');
 
-const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your Opponent has fled the Battlefield.";
+const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent has fled the battlefield.";
 
-const messageGameStarted = () => $("#info3").innerHTML = "The Game has started.";
+const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
 
 let socket = io.connect();
 

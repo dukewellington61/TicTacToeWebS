@@ -44,7 +44,7 @@ exports.Game = function Game(player) {
 
            for (let [index,win] of winCombos.entries()) {
              if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {
-               return `Spiel beendet: Spieler ${symbol} hat gewonnen!`;
+               return `Game Over: Player ${symbol} has won!`;
              };
            };
 
@@ -55,27 +55,14 @@ exports.Game = function Game(player) {
            if (gameObject.result === 'done') {
              for (let [index,win] of winCombos.entries()) {
                if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {
-                 return `Spiel beendet: Spieler ${symbol} hat gewonnen!`
+                 return `Game Over: Player ${symbol} has won!`
                }
-               else return 'Spiel endet unentschieden!'
+               else return "It's a draw."
              };
            };
 
            return "";
          };
-
-
-
-
-
-
-
-
-
-
-
-
-
      }};
        return gameObject;
 };

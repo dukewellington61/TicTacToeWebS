@@ -1,14 +1,23 @@
-table {
-  border-collapse: collapse;
+body {
+  display: flex;
+  background-color: rgba(0,0,0,0);
 }
 
+#TikTakToe {
+  margin: 0 auto;
+  background-color: rgba(0,0,0,0);
+}
+
+
+
 .button {
-  height: 100px;
-  width: 100px;
+  height: 3em;
+  width: 3em;
   vertical-align: bottom;
   font-size: 3em;
 }
 
-/* #start-button {
-  display: none;
-} */
+.info {
+  font-size: 1.5em;
+  color: white;
+}

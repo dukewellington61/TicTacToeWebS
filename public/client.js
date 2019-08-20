@@ -8,28 +8,23 @@ const viewTikTakToe = () => {
     <div class="info"><span id="info1">info1</span> <span id="info2">info2</span></div>
 
     <table>
-
         <button class='button' id='0'></button>
         <button class='button' id='1'></button>
         <button class='button' id='2'></button>
         <br>
 
-
         <button class='button' id='3'></button>
         <button class='button' id='4'></button>
         <button class='button' id='5'></button>
         <br>
-
-
+        
         <button class='button' id='6'></button>
         <button class='button' id='7'></button>
         <button class='button' id='8'></button>
         <br>
+    </table>  
 
-    </table>        
-
-    <div id="info3"></div>
-
+    <div id="info3" class="info"></div>
     <button type="button" id="start-button" class="btn btn-secondary">New Game</button>
     `
   )};
@@ -143,9 +138,7 @@ socket.on('endMessage', (message) => {
   showStartButton();  
   console.log(showStartButton()); 
   emptyInfo2();
-  socket.emit("move");
-  
-   
+  socket.emit("move");   
 });
 
 // socket.on('endMessage', () => location.reload(true));

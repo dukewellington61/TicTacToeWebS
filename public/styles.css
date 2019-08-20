@@ -8,11 +8,9 @@ body {
   background-color: rgba(0,0,0,0);
 }
 
-
-
 .button {
-  height: 3em;
-  width: 3em;
+  height: 2em;
+  width: 2em;
   vertical-align: bottom;
   font-size: 3em;
 }

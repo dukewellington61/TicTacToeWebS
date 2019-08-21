@@ -9,12 +9,12 @@ body {
 }
 
 #gamefield {  
-  width: 18.1em;  
+  width: 13.5em;  
 }
 
 .button {
-  height: 2em;
-  width: 2em;
+  height: 1.5em;
+  width: 1.5em;
   vertical-align: bottom;
   font-size: 3em;
 }

@@ -31,3 +31,9 @@ body {
   color: white;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+@media only screen and (min-width: 598px) {
+  .info {
+    font-size: 1em;
+  }
+}

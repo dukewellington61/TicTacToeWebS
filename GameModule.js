@@ -9,8 +9,6 @@ const winCombos = [
   [6, 4, 2]
 ];
 
-
-
 const start = () => {
   let randomNumber = Math.round(Math.random() * 1);
   if (randomNumber < 0.5) return 'X';

@@ -32,6 +32,13 @@ body {
   }
 }
 
+@media only screen and (min-width: 799px) {
+  .button {
+    height: 27.5vh;
+    width: 22.5vw;
+  }
+}
+
 .info {
   font-size: 1em;
   color: white;

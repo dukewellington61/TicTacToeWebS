@@ -31,7 +31,7 @@ const viewTikTakToe = () => {
       </table>  
 
       <div id="info3" class="info"></div>
-      <button type="button" id="start-button" class="btn btn-secondary">New Game</button>
+      <button id="start-button" type="button" class="btn btn-primary">New Game</button>
     </div>
     `
   )};

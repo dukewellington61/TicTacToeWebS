@@ -18,6 +18,12 @@ body {
   }
 }
 
+@media only screen and (min-width: 799px) {
+  #gamefield {  
+    width: 100%;  
+  }
+}
+
 .button {
   height: 1.75em;
   width: 1.75em;

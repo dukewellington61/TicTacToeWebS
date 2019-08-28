@@ -56,7 +56,7 @@ body {
 
 .info {
   font-size: 1em;
-  color: white;
+  color: red;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   display: flex;
   justify-content: space-between;

@@ -40,9 +40,9 @@ exports.Game = function Game(player) {
            const arrayOfXIndices = gameObject.gameField.reduce((a,e,i) => (e === 'X') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
            const arrayOfOIndices = gameObject.gameField.reduce((a,e,i) => (e === 'O') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
 
-           for (let [index,win] of winCombos.entries()) {
-             if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {
-               return `Game Over: Player ${symbol} has won!`;
+           for (let [index,win] of winCombos.entries()) {            
+             if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {             
+               return `Game Over: Player ${symbol} has won!`;               
              };
            };
 

@@ -15,7 +15,7 @@ const io = socketIo(webServer);
 
 let gameModule = require("./GameModule.js");
 
-let clients = new Array();
+let clients = [];
 let viewerArray = [];
 
 const newGame = new gameModule.Game();
@@ -24,25 +24,42 @@ let indexObject = {
   i: -1
 };
 
+
+
 io.on("connection", socket => {    
 
-    indexObject.i = indexObject.i + 1;
+    indexObject.i = indexObject.i + 1;    
     socket.emit('push');
     socket.emit('hide-start-button');   
 
-    if (clients[0] && clients[1]) {
-      viewerArray.push(socket);
-      viewerArray.forEach(x => x.emit('viewerMessage'));
+    if (clients.length == 2 && clients[0] != 'no-player' && clients[1] != 'no-player') {
+      console.log("array full");     
+      console.log(clients.length);   
+      viewerArray.push(socket);      
+      viewerArray.forEach(x => x.emit('viewerMessage'));           
     }
-    else clients[indexObject.i] = socket;     
 
-    if (viewerArray.length > 0) return;
+    if (clients.length < 2) {
+      console.log('clients.length < 2');
+      clients.push(socket);
+    };    
+
+    if (clients.includes('no-player')) {
+      console.log("clients.includes('no-player')");
+      
+      clients[clients.indexOf('no-player')] = socket;
+    };    
+
+    console.log(viewerArray.length);
+
+    
 
     const startPlayer = newGame.currentPlayer;
     const secondPlayer = newGame.secondPlayer;
 
 
     if (clients[0]) clients[0].emit('startPlayer',startPlayer);
+
     if (clients[1]) clients[1].emit('secondPlayer',startPlayer);
 
     io.emit("Am Zug: ...", startPlayer);
@@ -50,17 +67,19 @@ io.on("connection", socket => {
     if (clients.length == 1) socket.emit("messageWait");
     else io.emit("messageStart");
 
-    clients.forEach(client => client.on('newGame', () => {
-      clients[0].emit('enableClient0');
-      gameObject.gameField = ["","","","","","","","",""];
-      io.emit('gameField', newGame.gameField);  
-      io.emit("messageStart");
-      clients[0].emit('startPlayer',startPlayer);
-      clients[1].emit('secondPlayer',startPlayer);
-      io.emit("Am Zug: ...", startPlayer);
-      io.emit('hide-start-button');
-      io.emit('game-has-started');
-    }));   
+    if (clients[0] && clients[1]) {
+      clients.forEach(client => client.on('newGame', () => {
+        clients[0].emit('enableClient0');
+        gameObject.gameField = ["","","","","","","","",""];
+        io.emit('gameField', newGame.gameField);  
+        io.emit("messageStart");
+        clients[0].emit('startPlayer',startPlayer);
+        clients[1].emit('secondPlayer',startPlayer);
+        io.emit("Am Zug: ...", startPlayer);
+        io.emit('hide-start-button');
+        io.emit('game-has-started');
+      }));   
+  };
 
     if (clients[0] && clients[1]) {     
 
@@ -107,30 +126,33 @@ io.on("connection", socket => {
     };   
     
     if (clients[0]) {clients[0].on('disconnect', () => {             
-      delete clients[0];
+      clients[0] = 'no-player';    
       indexObject.i = -1;
       gameObject.gameField = ["","","","","","","","",""];
       io.emit('gameField', newGame.gameField); 
       io.emit('messagePlayerDisconnected');
       io.emit("messageWait");
       io.emit('emptyInfo2');
-      io.emit('hide-start-button');      
-      
-      console.log('client 0 disconnected ');
+      io.emit('hide-start-button');    
+      if (clients[0] == 'no-player' && clients[1] == 'no-player') clients = [];    
     })};    
 
     if (clients[1]) {clients[1].on('disconnect', () => {
-      delete clients[1];
+      clients[1] = 'no-player';      
       indexObject.i = 0;
       gameObject.gameField = ["","","","","","","","",""];
       io.emit('gameField', newGame.gameField); 
       io.emit('messagePlayerDisconnected');
       io.emit("messageWait");
       io.emit('emptyInfo2');
-      io.emit('hide-start-button');     
-      
-      console.log('client 1 disconnected ');
+      io.emit('hide-start-button');      
+      if (clients[0] == 'no-player' && clients[1] == 'no-player') clients = [];      
     })};  
+
+    // if (viewerArray[0]) {viewerArray.map((el,) => el.on('disconnect', index => {
+    //   // viewerArray.shift();
+    //   console.log(index);
+    // }))};
 });
 
 

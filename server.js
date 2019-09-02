@@ -36,7 +36,7 @@ io.on("connection", socket => {
       // console.log("array full");     
       // console.log(clients.length);   
       viewerArray.push(socket); 
-      // let arrayOfSockets = viewerArray.filter((el) => el != 'no-viewer');     
+      //    
       viewerArray.forEach(x => x.emit('viewerMessage'));           
     }
 
@@ -51,7 +51,11 @@ io.on("connection", socket => {
       clients[clients.indexOf('no-player')] = socket;
     };    
 
-    // console.log(viewerArray.length);
+    let arrayOfClientSockets = clients.filter((el) => el != 'no-player');  
+    let arrayOfViewerSockets = viewerArray.filter((el) => el != 'no-viewer');  
+
+    console.log('clients.length BEFORE disconnect ' + arrayOfClientSockets.length);
+    console.log('viewerArray.length BEFORE disconnect ' + arrayOfViewerSockets.length);
 
     
 
@@ -124,40 +128,66 @@ io.on("connection", socket => {
         };        
         io.emit('disableOccupiedFields', newGame.gameField);
       });
-    };   
+    };     
     
-    if (clients[0]) {clients[0].on('disconnect', () => {             
-      clients[0] = 'no-player';    
-      indexObject.i = -1;
-      gameObject.gameField = ["","","","","","","","",""];
-      io.emit('gameField', newGame.gameField); 
-      io.emit('messagePlayerDisconnected');
-      io.emit("messageWait");
-      io.emit('emptyInfo2');
-      io.emit('hide-start-button');    
-      if (clients[0] == 'no-player' && clients[1] == 'no-player') clients = [];    
-    })};    
+    // const reconnectClients = socket => socket.reconnect(PORT,HOST);
+    
 
-    if (clients[1]) {clients[1].on('disconnect', () => {
-      clients[1] = 'no-player';      
-      indexObject.i = 0;
+    const addViewerToClients = () => {
+      
+      if (arrayOfViewerSockets[0]) {
+        clients[clients.indexOf('no-player')] = arrayOfViewerSockets[0];         
+        // delete arrayOfViewerSockets[0];
+        for (let i = 0; i < viewerArray.length; i++) {
+          if (viewerArray[i] != 'no-viewer') {
+            delete viewerArray[i];
+            break;
+          };
+        };
+      };
+        
+      
+      location.reload(true);
+      let arrayOfClientSockets1 = clients.filter((el) => el != 'no-player');  
+      let arrayOfViewerSockets1 = viewerArray.filter((el) => el != 'no-viewer'); 
+      
+      console.log('1 clients.length AFTER disconnect ' + arrayOfClientSockets1.length);
+      console.log('1 viewerArray.length AFTER disconnect ' + arrayOfViewerSockets1.length);
+      
+
+    };
+
+    const fnPlayerDisconnect = socket => {
+      clients[clients.indexOf(socket)] = 'no-player';
       gameObject.gameField = ["","","","","","","","",""];
       io.emit('gameField', newGame.gameField); 
       io.emit('messagePlayerDisconnected');
       io.emit("messageWait");
       io.emit('emptyInfo2');
       io.emit('hide-start-button');      
-      if (clients[0] == 'no-player' && clients[1] == 'no-player') clients = [];      
-    })};  
+      if (clients[0] == 'no-player' && clients[1] == 'no-player') clients = [];   
+      let arrayOfClientSockets2 = clients.filter((el) => el != 'no-player');  
+      let arrayOfViewerSockets2 = viewerArray.filter((el) => el != 'no-viewer'); 
+     
+      console.log('2 clients.length AFTER disconnect ' + arrayOfClientSockets2.length);
+      console.log('2 viewerArray.length AFTER disconnect ' + arrayOfViewerSockets2.length);    
+      addViewerToClients();
+    };
 
-    const fn = (socket) => {
-      // viewerArray[(viewerArray.indexOf(socket))] = 'no-viewer';
-      delete viewerArray[(viewerArray.indexOf(socket))]
-      let arrayOfSockets = viewerArray.filter((el) => el != undefined);
-      console.log(arrayOfSockets.length);
-    }
+    clients.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
 
-    if (viewerArray[0]) {viewerArray.map((socket,index) => socket.on('disconnect', () => fn(socket)))};
+
+
+    const fnViewerDisconnect = socket => {       
+      delete viewerArray[(viewerArray.indexOf(socket))];   
+      let arrayOfClientSockets3 = clients.filter((el) => el != 'no-player');  
+      let arrayOfViewerSockets3 = viewerArray.filter((el) => el != 'no-viewer'); 
+      
+      console.log('3 clients.length AFTER disconnect ' + arrayOfClientSockets3.length);
+      console.log('3 viewerArray.length AFTER disconnect ' + arrayOfViewerSockets3.length);     
+    };
+
+    viewerArray.map(socket => socket.on('disconnect', () => fnViewerDisconnect(socket)));
      
       
 

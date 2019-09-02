@@ -33,24 +33,25 @@ io.on("connection", socket => {
     socket.emit('hide-start-button');   
 
     if (clients.length == 2 && clients[0] != 'no-player' && clients[1] != 'no-player') {
-      console.log("array full");     
-      console.log(clients.length);   
-      viewerArray.push(socket);      
+      // console.log("array full");     
+      // console.log(clients.length);   
+      viewerArray.push(socket); 
+      // let arrayOfSockets = viewerArray.filter((el) => el != 'no-viewer');     
       viewerArray.forEach(x => x.emit('viewerMessage'));           
     }
 
     if (clients.length < 2) {
-      console.log('clients.length < 2');
+      // console.log('clients.length < 2');
       clients.push(socket);
     };    
 
     if (clients.includes('no-player')) {
-      console.log("clients.includes('no-player')");
+      // console.log("clients.includes('no-player')");
       
       clients[clients.indexOf('no-player')] = socket;
     };    
 
-    console.log(viewerArray.length);
+    // console.log(viewerArray.length);
 
     
 
@@ -149,10 +150,19 @@ io.on("connection", socket => {
       if (clients[0] == 'no-player' && clients[1] == 'no-player') clients = [];      
     })};  
 
-    // if (viewerArray[0]) {viewerArray.map((el,) => el.on('disconnect', index => {
-    //   // viewerArray.shift();
-    //   console.log(index);
-    // }))};
+    const fn = (socket) => {
+      // viewerArray[(viewerArray.indexOf(socket))] = 'no-viewer';
+      delete viewerArray[(viewerArray.indexOf(socket))]
+      let arrayOfSockets = viewerArray.filter((el) => el != undefined);
+      console.log(arrayOfSockets.length);
+    }
+
+    if (viewerArray[0]) {viewerArray.map((socket,index) => socket.on('disconnect', () => fn(socket)))};
+     
+      
+
+      
+   
 });
 
 

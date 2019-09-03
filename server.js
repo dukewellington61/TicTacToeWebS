@@ -20,49 +20,29 @@ let viewerArray = [];
 
 const newGame = new gameModule.Game();
 
-let indexObject = {
-  i: -1
-};
-
-
 
 io.on("connection", socket => {    
-
-    indexObject.i = indexObject.i + 1;    
-    socket.emit('push');
-    socket.emit('hide-start-button');   
-
-    if (clients.length == 2 && clients[0] != 'no-player' && clients[1] != 'no-player') {
-      // console.log("array full");     
-      // console.log(clients.length);   
-      viewerArray.push(socket); 
-      //    
-      viewerArray.forEach(x => x.emit('viewerMessage'));           
-    }
-
-    if (clients.length < 2) {
-      // console.log('clients.length < 2');
-      clients.push(socket);
-    };    
-
-    if (clients.includes('no-player')) {
-      // console.log("clients.includes('no-player')");
       
-      clients[clients.indexOf('no-player')] = socket;
-    };    
+  socket.emit('push');
+  socket.emit('hide-start-button');   
 
-    let arrayOfClientSockets = clients.filter((el) => el != 'no-player');  
-    let arrayOfViewerSockets = viewerArray.filter((el) => el != 'no-viewer');  
+  if (clients.length > 1) {      
+    viewerArray.push(socket);      
+    viewerArray.forEach(x => x.emit('viewerMessage'));           
+  }
 
-    console.log('clients.length BEFORE disconnect ' + arrayOfClientSockets.length);
-    console.log('viewerArray.length BEFORE disconnect ' + arrayOfViewerSockets.length);
+  if (clients.length < 2) {      
+    clients.push(socket);
+  }; 
+  
+  
+  console.log('before CLIENTS array: ' + clients + clients.length);
+  console.log('before VIEWERS array: ' + viewerArray + viewerArray.length);
 
-    
+  const startPlayer = newGame.currentPlayer;
+  const secondPlayer = newGame.secondPlayer;
 
-    const startPlayer = newGame.currentPlayer;
-    const secondPlayer = newGame.secondPlayer;
-
-
+  const fn = () => {    
     if (clients[0]) clients[0].emit('startPlayer',startPlayer);
 
     if (clients[1]) clients[1].emit('secondPlayer',startPlayer);
@@ -84,12 +64,12 @@ io.on("connection", socket => {
         io.emit('hide-start-button');
         io.emit('game-has-started');
       }));   
-  };
+    };
 
     if (clients[0] && clients[1]) {     
 
       clients[0].emit('show-start-button');
-     
+    
       clients[0].emit('disableClient0');
       clients[1].emit('disableClient1');
                   
@@ -128,75 +108,63 @@ io.on("connection", socket => {
         };        
         io.emit('disableOccupiedFields', newGame.gameField);
       });
-    };     
+    };   
+  };  
+
+    fn();
+
+  const addViewerToClients = () => {
+    if (clients[0] && clients[1]) return
+    clients.push(viewerArray[0]);
+    removeViewerFromArray();
+    fn();
+    console.log('1 after CLIENTS array: ' + clients + clients.length);
+    console.log('1 after VIEWERS array: ' + viewerArray + viewerArray.length);                      
+  };   
+
+  const removeViewerFromArray = () => viewerArray.shift();
+
+  const fnPlayerDisconnect = socket => {
+    // console.log('fnPlayerDisconnect has been called');
+    // if ((clients.indexOf(socket)) == 0) clients.shift();
+    // if ((clients.indexOf(socket)) == 1) clients.pop();
+
+    let disconnectedSocket = clients[clients.indexOf(socket)];               
+    let FilterClientsArray = clients.filter(el => el != disconnectedSocket);
+    clients = FilterClientsArray;
+
+    gameObject.gameField = ["","","","","","","","",""];
+    io.emit('gameField', newGame.gameField); 
+    io.emit('messagePlayerDisconnected');
+    io.emit("messageWait");
+    io.emit('emptyInfo2');
+    io.emit('hide-start-button');      
+    if (!clients[0] && !clients[1]) clients = [];   
     
-    // const reconnectClients = socket => socket.reconnect(PORT,HOST);
-    
-
-    const addViewerToClients = () => {
-      
-      if (arrayOfViewerSockets[0]) {
-        clients[clients.indexOf('no-player')] = arrayOfViewerSockets[0];         
-        // delete arrayOfViewerSockets[0];
-        for (let i = 0; i < viewerArray.length; i++) {
-          if (viewerArray[i] != 'no-viewer') {
-            delete viewerArray[i];
-            break;
-          };
-        };
-      };
-        
-      
-      location.reload(true);
-      let arrayOfClientSockets1 = clients.filter((el) => el != 'no-player');  
-      let arrayOfViewerSockets1 = viewerArray.filter((el) => el != 'no-viewer'); 
-      
-      console.log('1 clients.length AFTER disconnect ' + arrayOfClientSockets1.length);
-      console.log('1 viewerArray.length AFTER disconnect ' + arrayOfViewerSockets1.length);
-      
-
+    console.log('2 after CLIENTS array: ' + clients + clients.length);
+    console.log('2 after VIEWERS array: ' + viewerArray + viewerArray.length);
+    if (viewerArray[0]) {
+      addViewerToClients();            
     };
-
-    const fnPlayerDisconnect = socket => {
-      clients[clients.indexOf(socket)] = 'no-player';
-      gameObject.gameField = ["","","","","","","","",""];
-      io.emit('gameField', newGame.gameField); 
-      io.emit('messagePlayerDisconnected');
-      io.emit("messageWait");
-      io.emit('emptyInfo2');
-      io.emit('hide-start-button');      
-      if (clients[0] == 'no-player' && clients[1] == 'no-player') clients = [];   
-      let arrayOfClientSockets2 = clients.filter((el) => el != 'no-player');  
-      let arrayOfViewerSockets2 = viewerArray.filter((el) => el != 'no-viewer'); 
-     
-      console.log('2 clients.length AFTER disconnect ' + arrayOfClientSockets2.length);
-      console.log('2 viewerArray.length AFTER disconnect ' + arrayOfViewerSockets2.length);    
-      addViewerToClients();
-    };
-
+    fn();
     clients.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
+  };
 
+  clients.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
 
-
-    const fnViewerDisconnect = socket => {       
-      delete viewerArray[(viewerArray.indexOf(socket))];   
-      let arrayOfClientSockets3 = clients.filter((el) => el != 'no-player');  
-      let arrayOfViewerSockets3 = viewerArray.filter((el) => el != 'no-viewer'); 
-      
-      console.log('3 clients.length AFTER disconnect ' + arrayOfClientSockets3.length);
-      console.log('3 viewerArray.length AFTER disconnect ' + arrayOfViewerSockets3.length);     
-    };
-
+  const fnViewerDisconnect = socket => {   
+    let disconnectedSocket = viewerArray[viewerArray.indexOf(socket)];       
+    let FilterViewerArray = viewerArray.filter(el => el != disconnectedSocket);
+    viewerArray = FilterViewerArray;
+    
+    console.log('3 after CLIENTS array: ' + clients + clients.length);
+    console.log('3 after VIEWERS array: ' + viewerArray + viewerArray.length);
+    fn();
     viewerArray.map(socket => socket.on('disconnect', () => fnViewerDisconnect(socket)));
-     
-      
+  };
 
-      
-   
+  viewerArray.map(socket => socket.on('disconnect', () => fnViewerDisconnect(socket)));   
 });
-
-
-
 
 webServer.listen(PORT, HOST, IP, () => {
     console.log(`Server running at http://${IP}:${PORT}/`);

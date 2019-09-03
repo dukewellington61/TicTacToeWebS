@@ -108,6 +108,11 @@ const messageGameStarted = () => $("#info3").innerHTML = "The game has started."
 
 let socket = io.connect();
 
+// const fnDoStuff = () => {
+//   console.log('test');
+//   window.open("http://127.0.0.1:8081/", "_blank");
+// };
+
 socket.on('push', () => viewTikTakToe());
 
 socket.on('hide-start-button', () => hideStartButton());
@@ -148,7 +153,7 @@ socket.on('endMessage', (message) => {
   socket.emit("move");   
 });
 
-// socket.on('endMessage', () => location.reload(true));
+socket.on('endMessage', () => location.reload(true));
 
 socket.on('emptyInfo3', () => emptyInfo3());
 
@@ -167,6 +172,8 @@ $("#TikTakToe").addEventListener("click", (e) => {
       else socket.emit("move", e.path[0].id);
     };
 });
+
+// socket.on('reconnect', () => fnDoStuff());
 
 
 

@@ -20,7 +20,6 @@ let viewerArray = [];
 
 const newGame = new gameModule.Game();
 
-
 io.on("connection", socket => {    
       
   socket.emit('push');
@@ -101,7 +100,7 @@ io.on("connection", socket => {
         clients[0].emit('enableClient0');   
         io.emit("Am Zug: ...", startPlayer);        
 
-        if (message === 'Spiel beendet: Spieler X hat das Spiel gewonnen!' || message === 'Spiel beendet: Spieler O hat gewonnen!' || message === 'Spiel endet unentschieden!') {
+        if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
           io.emit('endMessage',message);     
           clients[0].emit('disableClient0');
           clients[1].emit('disableClient1');
@@ -125,10 +124,6 @@ io.on("connection", socket => {
   const removeViewerFromArray = () => viewerArray.shift();
 
   const fnPlayerDisconnect = socket => {
-    // console.log('fnPlayerDisconnect has been called');
-    // if ((clients.indexOf(socket)) == 0) clients.shift();
-    // if ((clients.indexOf(socket)) == 1) clients.pop();
-
     let disconnectedSocket = clients[clients.indexOf(socket)];               
     let FilterClientsArray = clients.filter(el => el != disconnectedSocket);
     clients = FilterClientsArray;

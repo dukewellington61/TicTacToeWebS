@@ -51,7 +51,7 @@ const amZug = startPlayer => $("#info2").innerHTML = `Player ${startPlayer}'s tu
 
 const writeSymbolInGamefield = (symbol,field) => document.getElementById(field).textContent = symbol;  
 
-const disableOccupiedField = (gameField) => {
+const disableOccupiedField = gameField => {
   const arrayOfXIndices = gameField.reduce((a,e,i) => (e === 'X' || e === 'O') ? a.concat(i) : a, []);
   for (let i = 0; i < arrayOfXIndices.length; i++) {
     let idField = arrayOfXIndices[i];
@@ -85,7 +85,7 @@ const enableClient1 = () => {
   };
 };
 
-const endMessage = (message) => $("#info1").innerHTML = message;
+const endMessage = message => $("#info1").innerHTML = message;
 
 const emptyInfo3 = () => $("#info3").innerHTML = "";
 
@@ -108,11 +108,6 @@ const messageGameStarted = () => $("#info3").innerHTML = "The game has started."
 
 let socket = io.connect();
 
-// const fnDoStuff = () => {
-//   console.log('test');
-//   window.open("http://127.0.0.1:8081/", "_blank");
-// };
-
 socket.on('push', () => viewTikTakToe());
 
 socket.on('hide-start-button', () => hideStartButton());
@@ -123,19 +118,17 @@ socket.on('messageWait', () => messageWait());
 
 socket.on('messageStart', () => messageStart());
 
-socket.on('startPlayer', (startPlayer) => startPlayerInfo(startPlayer));
+socket.on('startPlayer', startPlayer => startPlayerInfo(startPlayer));
 
-socket.on('secondPlayer', (startPlayer) => {
-  secondPlayerInfo(startPlayer);
-});
+socket.on('secondPlayer', startPlayer => secondPlayerInfo(startPlayer));
 
-socket.on('Am Zug: ...', (startPlayer) => amZug(startPlayer));
+socket.on('Am Zug: ...', startPlayer => amZug(startPlayer));
 
-socket.on('gameField', (gameField) => gameField.forEach((symbol,field) => writeSymbolInGamefield(symbol,field)));
+socket.on('gameField', gameField => gameField.forEach((symbol,field) => writeSymbolInGamefield(symbol,field)));
 
-socket.on('disableOccupiedFields', (gameField) => disableOccupiedField(gameField));
+socket.on('disableOccupiedFields', gameField => disableOccupiedField(gameField));
 
-socket.on("messageForMove", (messageForMove) => writeMessageForMove(messageForMove));
+socket.on("messageForMove", messageForMove => writeMessageForMove(messageForMove));
 
 socket.on('disableClient0', () => disableClient0());
 
@@ -145,15 +138,13 @@ socket.on('disableClient1', () => disableClient1());
 
 socket.on('enableClient1', () => enableClient1());
 
-socket.on('endMessage', (message) => {
+socket.on('endMessage', message => {
   console.log(endMessage(message));
   showStartButton();  
   console.log(showStartButton()); 
   emptyInfo2();
   socket.emit("move");   
 });
-
-socket.on('endMessage', () => location.reload(true));
 
 socket.on('emptyInfo3', () => emptyInfo3());
 
@@ -173,7 +164,7 @@ $("#TikTakToe").addEventListener("click", (e) => {
     };
 });
 
-// socket.on('reconnect', () => fnDoStuff());
+
 
 
 

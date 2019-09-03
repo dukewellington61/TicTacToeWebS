@@ -34,33 +34,33 @@ exports.Game = function Game(player) {
      result: "",
      move: (symbol,field) => {
          
-         if (gameObject.gameField[field] === "") {
-           gameObject.gameField[field] = symbol;
+      if (gameObject.gameField[field] === "") {
+        gameObject.gameField[field] = symbol;
 
-           const arrayOfXIndices = gameObject.gameField.reduce((a,e,i) => (e === 'X') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
-           const arrayOfOIndices = gameObject.gameField.reduce((a,e,i) => (e === 'O') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
+        const arrayOfXIndices = gameObject.gameField.reduce((a,e,i) => (e === 'X') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
+        const arrayOfOIndices = gameObject.gameField.reduce((a,e,i) => (e === 'O') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
 
-           for (let [index,win] of winCombos.entries()) {            
-             if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {             
-               return `Game Over: Player ${symbol} has won!`;               
-             };
-           };
+        for (let [index,win] of winCombos.entries()) {            
+          if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {             
+            return `Game Over: Player ${symbol} has won!`;               
+          };
+        };
 
-           const numberOfSymbolsOnGameField = gameObject.gameField.filter(x => x != "").length;
+        const numberOfSymbolsOnGameField = gameObject.gameField.filter(x => x != "").length;
 
-           numberOfSymbolsOnGameField === 9 ? gameObject.result = 'done' : gameObject.result = symbol;
+        numberOfSymbolsOnGameField === 9 ? gameObject.result = 'done' : gameObject.result = symbol;
 
-           if (gameObject.result === 'done') {
-             for (let [index,win] of winCombos.entries()) {
-               if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {
-                 return `Game Over: Player ${symbol} has won!`
-               }
-               else return "It's a draw."
-             };
-           };
+        if (gameObject.result === 'done') {
+          for (let [index,win] of winCombos.entries()) {
+            if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {
+              return `Game Over: Player ${symbol} has won!`
+            }
+            else return "It's a draw."
+          };
+        };
 
-           return "";
-         };
-     }};
-       return gameObject;
+        return "";
+      };
+  }};
+    return gameObject;
 };

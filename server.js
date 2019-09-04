@@ -21,6 +21,11 @@ let viewerArray = [];
 const newGame = new gameModule.Game();
 
 io.on("connection", socket => {    
+
+ 
+  socket.on('send-chat-message', message => socket.broadcast.emit('chat-message', message));
+
+  
       
   socket.emit('push');
   socket.emit('hide-start-button');   

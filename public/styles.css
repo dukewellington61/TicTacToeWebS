@@ -82,3 +82,18 @@ p {
     font-size: 1em;
   }
 }
+
+/* chat area */
+
+#chat-area {
+  display: flex;
+  flex-direction: column;
+}
+
+#message-container {
+  height: 10em;
+  width: 15em;
+  border-style: solid;
+  border-width: 2px;
+  border-color: red;
+}

@@ -1,6 +1,10 @@
 const $  = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
+const messageForm = document.getElementById('send-container');
+const messageInput = document.getElementById('message-input');
+const messageContainer = document.getElementById('message-container');
+
 const viewTikTakToe = () => {
 
   return $("#TikTakToe").innerHTML = ejs.render(
@@ -106,7 +110,20 @@ const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent h
 
 const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
 
-let socket = io.connect();
+const appendMessage = message => {
+  const messageElement = document.createElement('div');
+  messageElement.innerText = message;
+  messageContainer.appendChild(messageElement);
+};
+
+messageForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const message = messageInput.value;
+  socket.emit('send-chat-message', message);
+  messageInput.value = " ";
+});
+
+const socket = io.connect();
 
 socket.on('push', () => viewTikTakToe());
 
@@ -156,6 +173,8 @@ socket.on('messagePlayerDisconnected', () => messagePlayerDisconnected());
 
 socket.on('game-has-started', () => messageGameStarted());
 
+socket.on('chat-message', data => appendMessage(data));
+
 $("#TikTakToe").addEventListener("click", (e) => {
   if (e.path[0].id === "start-button") socket.emit("newGame");
     else {
@@ -163,6 +182,8 @@ $("#TikTakToe").addEventListener("click", (e) => {
       else socket.emit("move", e.path[0].id);
     };
 });
+
+
 
 
 

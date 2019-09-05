@@ -84,6 +84,20 @@ p {
 }
 
 /* chat area */
+#player-name-input {  
+  position: absolute;
+  top: 50%;
+  height: 2em;
+  width: 5.25em;
+}
+
+.player-name-input-remove {
+  display: none;
+}
+
+.welcome-field-display-none {
+  display: none;
+}
 
 #chat-area {
   display: flex;

@@ -13,7 +13,9 @@ const socketIo = require("socket.io");
 const webServer = http.Server(app);
 const io = socketIo(webServer);
 
-let gameModule = require("./GameModule.js");
+const gameModule = require("./GameModule.js");
+
+const users = {};
 
 let clients = [];
 let viewerArray = [];
@@ -22,10 +24,14 @@ const newGame = new gameModule.Game();
 
 io.on("connection", socket => {    
 
- 
-  socket.on('send-chat-message', message => socket.broadcast.emit('chat-message', message));
+  /* messenger stuff */
+  socket.on('new-user', name => {    
+    users[socket.id] = name;
+    socket.broadcast.emit('user-connected', name);    
+  });
 
-  
+  socket.on('send-chat-message', message => io.emit('chat-message', {message: message, name: users[socket.id]}));  
+  /* end of messenger stuff */
       
   socket.emit('push');
   socket.emit('hide-start-button');   
@@ -40,16 +46,17 @@ io.on("connection", socket => {
   }; 
   
   
-  console.log('before CLIENTS array: ' + clients + clients.length);
-  console.log('before VIEWERS array: ' + viewerArray + viewerArray.length);
-
-  const startPlayer = newGame.currentPlayer;
-  const secondPlayer = newGame.secondPlayer;
+  // console.log('before CLIENTS array: ' + clients + clients.length);
+  // console.log('before VIEWERS array: ' + viewerArray + viewerArray.length);  
 
   const fn = () => {    
-    if (clients[0]) clients[0].emit('startPlayer',startPlayer);
 
-    if (clients[1]) clients[1].emit('secondPlayer',startPlayer);
+    const startPlayer = newGame.currentPlayer;
+    const secondPlayer = newGame.secondPlayer;
+
+    if (clients[0]) clients[0].emit('startPlayer', startPlayer);
+
+    if (clients[1]) clients[1].emit('secondPlayer', startPlayer);
 
     io.emit("Am Zug: ...", startPlayer);
 
@@ -78,7 +85,7 @@ io.on("connection", socket => {
       clients[1].emit('disableClient1');
                   
       clients[0].on('move', (field) => {
-        const message = newGame.move(startPlayer,field);
+        const message = newGame.move('X',field);
         io.emit('gameField', newGame.gameField);       
         clients.forEach(x => x.emit('emptyInfo3'));
         
@@ -96,7 +103,7 @@ io.on("connection", socket => {
       });
 
       clients[1].on('move', (field) => {
-        const message = newGame.move(secondPlayer,field);
+        const message = newGame.move('O',field);
         io.emit('gameField', newGame.gameField);
         
         clients.forEach(x => x.emit('emptyInfo3'));
@@ -122,8 +129,8 @@ io.on("connection", socket => {
     clients.push(viewerArray[0]);
     removeViewerFromArray();
     fn();
-    console.log('1 after CLIENTS array: ' + clients + clients.length);
-    console.log('1 after VIEWERS array: ' + viewerArray + viewerArray.length);                      
+    // console.log('1 after CLIENTS array: ' + clients + clients.length);
+    // console.log('1 after VIEWERS array: ' + viewerArray + viewerArray.length);                      
   };   
 
   const removeViewerFromArray = () => viewerArray.shift();
@@ -141,8 +148,8 @@ io.on("connection", socket => {
     io.emit('hide-start-button');      
     if (!clients[0] && !clients[1]) clients = [];   
     
-    console.log('2 after CLIENTS array: ' + clients + clients.length);
-    console.log('2 after VIEWERS array: ' + viewerArray + viewerArray.length);
+    // console.log('2 after CLIENTS array: ' + clients + clients.length);
+    // console.log('2 after VIEWERS array: ' + viewerArray + viewerArray.length);
     if (viewerArray[0]) {
       addViewerToClients();            
     };
@@ -157,8 +164,8 @@ io.on("connection", socket => {
     let FilterViewerArray = viewerArray.filter(el => el != disconnectedSocket);
     viewerArray = FilterViewerArray;
     
-    console.log('3 after CLIENTS array: ' + clients + clients.length);
-    console.log('3 after VIEWERS array: ' + viewerArray + viewerArray.length);
+    // console.log('3 after CLIENTS array: ' + clients + clients.length);
+    // console.log('3 after VIEWERS array: ' + viewerArray + viewerArray.length);
     fn();
     viewerArray.map(socket => socket.on('disconnect', () => fnViewerDisconnect(socket)));
   };

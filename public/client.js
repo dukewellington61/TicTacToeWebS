@@ -1,9 +1,13 @@
 const $  = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
+
+/* messenger stuff */
 const messageForm = document.getElementById('send-container');
 const messageInput = document.getElementById('message-input');
 const messageContainer = document.getElementById('message-container');
+/* end of messenger stuff*/
+
 
 const viewTikTakToe = () => {
 
@@ -18,28 +22,28 @@ const viewTikTakToe = () => {
       </div>
 
       <table>
-          <button class='button' id='0'></button>
-          <button class='button' id='1'></button>
-          <button class='button' id='2'></button>
-          <br>
+        <button class='button' id='0'></button>
+        <button class='button' id='1'></button>
+        <button class='button' id='2'></button>
+        <br>
 
-          <button class='button' id='3'></button>
-          <button class='button' id='4'></button>
-          <button class='button' id='5'></button>
-          <br>
-          
-          <button class='button' id='6'></button>
-          <button class='button' id='7'></button>
-          <button class='button' id='8'></button>
-          <br>
+        <button class='button' id='3'></button>
+        <button class='button' id='4'></button>
+        <button class='button' id='5'></button>
+        <br>
+        
+        <button class='button' id='6'></button>
+        <button class='button' id='7'></button>
+        <button class='button' id='8'></button>
+        <br>
       </table>  
 
       <div id="info3" class="info"></div>
+      <div id="info4" class="info"></div>
       <button id="start-button" type="button" class="btn btn-primary">New Game</button>
     </div>
     `
   )};
-
   
 const messageWait = () => $("#info3").innerHTML = "Please wait for your opponent";
 
@@ -110,11 +114,52 @@ const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent h
 
 const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
 
-const appendMessage = message => {
-  const messageElement = document.createElement('div');
-  messageElement.innerText = message;
+
+/* more messenger stuff */
+
+const appendMessage = data => {  
+  const inputElement = document.getElementById('player-name-input');   
+  const messageElement = document.createElement('div');  
+  if (inputElement) inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;  
+  else sessionStorage.getItem('player-name') == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;
   messageContainer.appendChild(messageElement);
 };
+
+const createPlayerNameInputField = () => { 
+    const ticTacToeGameField = document.getElementById('gamefield');
+    const inputElement = document.createElement('input');  
+
+    if (sessionStorage.getItem('player-name') == null) {
+
+      inputElement.type = 'text';
+      inputElement.id = 'player-name-input';
+      inputElement.placeholder = 'What is your name, Player?';
+      inputElement.autofocus = true;
+      inputElement.required = true;
+      ticTacToeGameField.appendChild(inputElement);   
+
+      inputElement.addEventListener('keyup', e => {
+        if (e.keyCode === 13) {
+          inputElement.classList.add('player-name-input-remove');
+          displayWelcomePlayer(ticTacToeGameField, inputElement.value); 
+          sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));      
+        };
+      }); 
+    }
+
+  else displayWelcomePlayer(ticTacToeGameField, sessionStorage.getItem('player-name')); 
+  
+};
+
+const displayWelcomePlayer = (ticTacToeGameField, name) => {  
+  const welcomeElement = document.createElement('div');
+  welcomeElement.id = 'welcome-element';
+  welcomeElement.innerText = `Welcome ${name}`;
+  ticTacToeGameField.appendChild(welcomeElement);  
+  document.addEventListener('click', () => welcomeElement.classList.add('welcome-field-display-none'));
+  if (sessionStorage.getItem('player-name') == null) socket.emit('new-user', name);
+  else  socket.emit('new-user', sessionStorage.getItem('player-name'));
+};  
 
 messageForm.addEventListener('submit', e => {
   e.preventDefault();
@@ -123,9 +168,19 @@ messageForm.addEventListener('submit', e => {
   messageInput.value = " ";
 });
 
+const broadCastNewUsersName = name => {
+  const usersNameElement = document.getElementById('info4');  
+  usersNameElement.innerText = `Your playing against ${name}`;
+}
+/* end of more messenger stuff */
+
+
 const socket = io.connect();
 
-socket.on('push', () => viewTikTakToe());
+socket.on('push', () => {
+  viewTikTakToe();
+  createPlayerNameInputField()
+});
 
 socket.on('hide-start-button', () => hideStartButton());
 
@@ -173,7 +228,12 @@ socket.on('messagePlayerDisconnected', () => messagePlayerDisconnected());
 
 socket.on('game-has-started', () => messageGameStarted());
 
+
+/* even more messenger stuff */
 socket.on('chat-message', data => appendMessage(data));
+socket.on('user-connected', name => broadCastNewUsersName(name));
+/* end of even more messenger stuff */
+
 
 $("#TikTakToe").addEventListener("click", (e) => {
   if (e.path[0].id === "start-button") socket.emit("newGame");

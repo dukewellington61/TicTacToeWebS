@@ -28,41 +28,42 @@ exports.Game = function Game(player) {
   
   const secondPlayer = second();
 
-   gameObject = {
-     emptyGameField: ["","","","","","","","",""],
-     gameField: ["","","","","","","","",""],
-     currentPlayer: startPlayer,
-     secondPlayer: secondPlayer,
-     result: "",
-     move: (symbol,field) => {
-         
-      if (gameObject.gameField[field] === "") {
-        gameObject.gameField[field] = symbol;
+  gameObject = {
+    emptyGameField: ["","","","","","","","",""],
+    gameField: ["","","","","","","","",""],
+    currentPlayer: startPlayer,
+    secondPlayer: secondPlayer,
+    result: "",
+    move: (symbol,field) => {    
+        
+    if (gameObject.gameField[field] === "") {
 
-        const arrayOfXIndices = gameObject.gameField.reduce((a,e,i) => (e === 'X') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
-        const arrayOfOIndices = gameObject.gameField.reduce((a,e,i) => (e === 'O') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
+      gameObject.gameField[field] = symbol;     
 
-        for (let [index,win] of winCombos.entries()) {            
-          if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {             
-            return `Game Over: Player ${symbol} has won!`;               
-          };
+      const arrayOfXIndices = gameObject.gameField.reduce((a,e,i) => (e === 'X') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
+      const arrayOfOIndices = gameObject.gameField.reduce((a,e,i) => (e === 'O') ? a.concat(i) : a, []); //finds all fields in board that have already symbols
+
+      for (let [index,win] of winCombos.entries()) {            
+        if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {             
+          return `Game Over: Player ${symbol} has won!`;               
         };
-
-        const numberOfSymbolsOnGameField = gameObject.gameField.filter(x => x != "").length;
-
-        numberOfSymbolsOnGameField === 9 ? gameObject.result = 'done' : gameObject.result = symbol;
-
-        if (gameObject.result === 'done') {
-          for (let [index,win] of winCombos.entries()) {
-            if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {
-              return `Game Over: Player ${symbol} has won!`
-            }
-            else return "It's a draw."
-          };
-        };
-
-        return "";
       };
-  }};
-    return gameObject;
+
+      const numberOfSymbolsOnGameField = gameObject.gameField.filter(x => x != "").length;
+
+      numberOfSymbolsOnGameField === 9 ? gameObject.result = 'done' : gameObject.result = symbol;
+
+      if (gameObject.result === 'done') {
+        for (let [index,win] of winCombos.entries()) {
+          if (win.every(elem => arrayOfXIndices.indexOf(elem) > -1) || win.every(elem => arrayOfOIndices.indexOf(elem) > -1)) {
+            return `Game Over: Player ${symbol} has won!`
+          }
+          else return "It's a draw."
+        };
+      };
+
+      return "";
+    };
+}};
+  return gameObject;
 };

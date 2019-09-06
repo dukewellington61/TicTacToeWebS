@@ -1,12 +1,17 @@
+const socket = io.connect();
+
 const $  = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
+
+// if (sessionStorage.getItem('first-visit')) socket.emit('reload', sessionStorage.getItem('first-visit') ); 
+// else sessionStorage.setItem('first-visit', JSON.stringify('first visit')); 
 
 
 /* messenger stuff */
 const messageForm = document.getElementById('send-container');
 const messageInput = document.getElementById('message-input');
 const messageContainer = document.getElementById('message-container');
-/* end of messenger stuff*/
+/* end of messenger stuff */
 
 
 const viewTikTakToe = () => {
@@ -126,26 +131,26 @@ const appendMessage = data => {
 };
 
 const createPlayerNameInputField = () => { 
-    const ticTacToeGameField = document.getElementById('gamefield');
-    const inputElement = document.createElement('input');  
+  const ticTacToeGameField = document.getElementById('gamefield');
+  const inputElement = document.createElement('input');  
 
-    if (sessionStorage.getItem('player-name') == null) {
+  if (sessionStorage.getItem('player-name') == null) {
 
-      inputElement.type = 'text';
-      inputElement.id = 'player-name-input';
-      inputElement.placeholder = 'What is your name, Player?';
-      inputElement.autofocus = true;
-      inputElement.required = true;
-      ticTacToeGameField.appendChild(inputElement);   
+    inputElement.type = 'text';
+    inputElement.id = 'player-name-input';
+    inputElement.placeholder = 'What is your name, Player?';
+    inputElement.autofocus = true;
+    inputElement.required = true;
+    ticTacToeGameField.appendChild(inputElement);   
 
-      inputElement.addEventListener('keyup', e => {
-        if (e.keyCode === 13) {
-          inputElement.classList.add('player-name-input-remove');
-          displayWelcomePlayer(ticTacToeGameField, inputElement.value); 
-          sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));      
-        };
-      }); 
-    }
+    inputElement.addEventListener('keyup', e => {
+      if (e.keyCode === 13) {
+        inputElement.classList.add('player-name-input-remove');
+        displayWelcomePlayer(ticTacToeGameField, inputElement.value); 
+        sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));      
+      };
+    }); 
+  }
 
   else displayWelcomePlayer(ticTacToeGameField, sessionStorage.getItem('player-name')); 
   
@@ -157,8 +162,9 @@ const displayWelcomePlayer = (ticTacToeGameField, name) => {
   welcomeElement.innerText = `Welcome ${name}`;
   ticTacToeGameField.appendChild(welcomeElement);  
   document.addEventListener('click', () => welcomeElement.classList.add('welcome-field-display-none'));
+
   if (sessionStorage.getItem('player-name') == null) socket.emit('new-user', name);
-  else  socket.emit('new-user', sessionStorage.getItem('player-name'));
+  else socket.emit('new-user', sessionStorage.getItem('player-name'));
 };  
 
 messageForm.addEventListener('submit', e => {
@@ -175,7 +181,7 @@ const broadCastNewUsersName = name => {
 /* end of more messenger stuff */
 
 
-const socket = io.connect();
+
 
 socket.on('push', () => {
   viewTikTakToe();
@@ -227,6 +233,8 @@ socket.on('viewerMessage', () => viewerMessage());
 socket.on('messagePlayerDisconnected', () => messagePlayerDisconnected());
 
 socket.on('game-has-started', () => messageGameStarted());
+
+// socket.on('page-refresh', () => location.reload());
 
 
 /* even more messenger stuff */

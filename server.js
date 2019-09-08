@@ -21,7 +21,6 @@ let client0ID = {};
 
 let client1ID = {};
 
-
 let clients = new Array(2);
 
 let viewerArray = [];
@@ -35,34 +34,35 @@ io.on("connection", socket => {
 
   const addToArray = () => {
 
-    if (!clients[0] && !clients[1]) {
-      clients[0] = socket;     
+    if (clients[0] == undefined && clients[1] == undefined) {
+      clients[0] = socket;    
+      console.log('conditional 1'); 
       return;
     };
 
-    if (clients[0] && !clients[1]) {
+    if (clients[0] != undefined && clients[1] == undefined) {
       clients[1] = socket;   
+      console.log('conditional 2');
       return;
     };
 
-    if (clients[0] == undefined) {
-      clients[0] = socket;
+    if (clients[0] == undefined && clients[1] != undefined) {
+      clients[0] = socket;   
+      console.log('conditional 3');
       return;
-    };
+    };    
 
-    if (clients[0] && clients[1]) {      
+    if (clients[0] != undefined && clients[1] != undefined) {      
       viewerArray.push(socket);
       viewerArray.forEach(x => x.emit('viewerMessage')); 
+      console.log('conditional 4');
     };  
   };
   
   addToArray();
 
   if (clients[0]) client0ID.id = clients[0].id;
-  if (clients[1]) client1ID.id = clients[1].id;
-
-  console.log(client0ID);
-  console.log(client1ID);
+  if (clients[1]) client1ID.id = clients[1].id;  
 
   /* messenger stuff */
   socket.on('new-user', name => {    
@@ -71,25 +71,15 @@ io.on("connection", socket => {
   });  
 
   socket.on('send-chat-message', message => io.emit('chat-message', {message: message, name: users[socket.id]}));  
-  /* end of messenger stuff */
-
-  if (clients[0]) clients[0].on('new-user', name => client0Name.name = name);
-  if (clients[1]) clients[1].on('new-user', name => client1Name.name = name);
-
+  /* end of messenger stuff */  
   
-  // console.log(client0Name);
-  // console.log(client1Name);
+  console.log('before CLIENTS array: ' + clients);  
+  console.log('before VIEWERS array: ' + viewerArray);   
   
-  
-  // console.log('before CLIENTS array: ' + clients);
-  // console.log('before VIEWERS array: ' + viewerArray);  
 
-  const fn = () => {    
-
+  const fn = () => {  
     const startPlayer = newGame.currentPlayer;
     const secondPlayer = newGame.secondPlayer;       
-
-    
 
     if (clients[0]) clients[0].emit('startPlayer', startPlayer);
 
@@ -159,79 +149,53 @@ io.on("connection", socket => {
     };   
   };  
 
-    fn();
+  fn();
 
-  const addViewerToClients = () => {
-    // if (clients[0] != undefined && clients[1] != undefined) return;
-    if (viewerArray[0]) {
+  const addViewerToClients = () => {    
+    if (viewerArray[0]) {      
       if (clients[0] == undefined) {
-        clients[0] = viewerArray[0];
-        // clients[0].emit('page-refresh');
-        // console.log('page-refresh');
+        clients[0] = viewerArray[0];        
       };
+
       if (clients[1] == undefined) {
-        clients[1] = viewerArray[0];  
-        // clients[0].emit('page-refresh');
-        // console.log('page-refresh');
+        clients[1] = viewerArray[0];       
       };    
+
       removeViewerFromArray();
+      clients[0].emit('page-refresh'); 
+      if (clients[1]) delete clients[0];       
       
       fn();
-      // console.log('1 after CLIENTS array: ' + clients + clients.length);
-      // console.log('1 after VIEWERS array: ' + viewerArray + viewerArray.length);   
+      console.log('1 after CLIENTS array: ' + clients + clients.length);
+      console.log('1 after VIEWERS array: ' + viewerArray + viewerArray.length);   
     };                   
   };   
 
   const removeViewerFromArray = () => viewerArray.shift();
 
   const fnPlayerDisconnect = socket => {
-    // let disconnectedSocket = clients[clients.indexOf(socket)];               
-    // let FilterClientsArray = clients.filter(el => el != disconnectedSocket);
-
-    delete clients[clients.indexOf(socket)];    
-
-    // clients = FilterClientsArray;
+    delete clients[clients.indexOf(socket)];        
     gameObject.gameField = ["","","","","","","","",""];
     io.emit('gameField', newGame.gameField); 
     io.emit('messagePlayerDisconnected');
     io.emit("messageWait");
     io.emit('emptyInfo2');
     io.emit('hide-start-button');      
-    if (!clients[0] && !clients[1]) clients = [];   
-    // io.emit('page-refresh');
+    if (!clients[0] && !clients[1]) clients = [];     
     
+    console.log('2 after CLIENTS array: ' + clients + clients.length);
+    console.log('2 after VIEWERS array: ' + viewerArray + viewerArray.length);    
     
-    // console.log('2 after CLIENTS array: ' + clients + clients.length);
-    // console.log('2 after VIEWERS array: ' + viewerArray + viewerArray.length);
-    
-    
-    // if (client0Name.name == 'no-name') {      
-    //   addViewerToClients(); 
-    // };
-
-    // if (client1Name.name == 'no-name') {      
-    //   addViewerToClients();      
-    // };
-
-    socket.id === client0ID ? delete client0ID.id : delete client1ID.id;
-
-    console.log('after: ' + client0ID);
-    console.log('after: ' + client1ID);
+    socket.id === client0ID ? delete client0ID.id : delete client1ID.id;   
 
     setTimeout( () => !client0ID.id ? addViewerToClients() : undefined, 300);
 
-    setTimeout( () => !client1ID.id ? addViewerToClients() : undefined, 300);
-    
-    // addViewerToClients();
+    setTimeout( () => !client1ID.id ? addViewerToClients() : undefined, 300);   
     
     fn();
+
     clients.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
   };
-
-
-
-
-
 
 
   clients.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
@@ -241,8 +205,8 @@ io.on("connection", socket => {
     let FilterViewerArray = viewerArray.filter(el => el != disconnectedSocket);
     viewerArray = FilterViewerArray;
     
-    // console.log('3 after CLIENTS array: ' + clients + clients.length);
-    // console.log('3 after VIEWERS array: ' + viewerArray + viewerArray.length);
+    console.log('3 after CLIENTS array: ' + clients + clients.length);
+    console.log('3 after VIEWERS array: ' + viewerArray + viewerArray.length);
     fn();
     viewerArray.map(socket => socket.on('disconnect', () => fnViewerDisconnect(socket)));
   };

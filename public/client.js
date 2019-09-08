@@ -234,7 +234,7 @@ socket.on('messagePlayerDisconnected', () => messagePlayerDisconnected());
 
 socket.on('game-has-started', () => messageGameStarted());
 
-// socket.on('page-refresh', () => location.reload());
+socket.on('page-refresh', () => location.reload());
 
 
 /* even more messenger stuff */

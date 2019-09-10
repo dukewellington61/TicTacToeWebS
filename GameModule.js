@@ -9,26 +9,24 @@ const winCombos = [
   [6, 4, 2]
 ];
 
+const start = () => {
+  let randomNumber = Math.round(Math.random() * 1);
+  if (randomNumber < 0.5) return 'X';
+  else return 'O';
+};
 
+const second = () => {
+  if (startPlayer === 'X') return 'O';
+  else return 'X';
+};
 
-exports.Game = function Game(player) {
+const startPlayer = start();
 
-  const start = () => {
-    let randomNumber = Math.round(Math.random() * 1);
-    if (randomNumber < 0.5) return 'X';
-    else return 'O';
-  };
-  
-  const second = () => {
-    if (startPlayer === 'X') return 'O';
-    else return 'X';
-  };
-  
-  const startPlayer = start();
-  
-  const secondPlayer = second();
+const secondPlayer = second();
 
-  gameObject = {
+exports.Game = function Game() { 
+
+  const gameObject = {
     emptyGameField: ["","","","","","","","",""],
     gameField: ["","","","","","","","",""],
     currentPlayer: startPlayer,

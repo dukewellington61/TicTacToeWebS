@@ -13,6 +13,10 @@ const socketIo = require("socket.io");
 const webServer = http.Server(app);
 const io = socketIo(webServer);
 
+// app.get("/hello-world", (req, res) => {
+//   res.send("Hello World");
+// });
+
 const gameModule = require("./GameModule.js");
 
 const users = {};
@@ -21,45 +25,90 @@ let client0ID = {};
 
 let client1ID = {};
 
-let clients = new Array(2);
+let clients = [];
 
 let viewerArray = [];
 
 const newGame = new gameModule.Game();
 
+function createRoom(socket) {
+  return {
+    player1: socket
+  }
+}
+
+// function Room (socket) {
+//   this.player1 = socket
+// }
+
+let roomsArray = [];
+
+let newRoom = {};
+
+
+
 io.on("connection", socket => {     
       
   socket.emit('push');
-  socket.emit('hide-start-button');   
+  socket.emit('hide-start-button');  
 
-  const addToArray = () => {
+  // let clients =  Object.values(new Room(socket));
 
-    if (clients[0] == undefined && clients[1] == undefined) {
-      clients[0] = socket;    
-      console.log('conditional 1'); 
+  const roomsAndPlayaz = () => {      
+
+    if (roomsArray.length === 0) {    
+      newRoom = createRoom(socket);      
+      roomsArray.push(newRoom);   
+      console.log('conditional1');     
       return;
-    };
+    };   
 
-    if (clients[0] != undefined && clients[1] == undefined) {
-      clients[1] = socket;   
-      console.log('conditional 2');
+    if (roomsArray.every( el => el.player1 != undefined) && roomsArray.every( el => el.player2 != undefined)) {    
+      newRoom = createRoom(socket);      
+      roomsArray.push(newRoom);   
+      console.log('conditional2');     
       return;
-    };
-
-    if (clients[0] == undefined && clients[1] != undefined) {
-      clients[0] = socket;   
-      console.log('conditional 3');
-      return;
-    };    
-
-    if (clients[0] != undefined && clients[1] != undefined) {      
-      viewerArray.push(socket);
-      viewerArray.forEach(x => x.emit('viewerMessage')); 
-      console.log('conditional 4');
+    };   
+    
+    if (roomsArray.some( el => el.player2 == undefined)) {
+      newRoom.player2 = socket;   
+      console.log('conditional3');   
+      return;      
     };  
   };
+
+  roomsAndPlayaz();  
+
+  console.log(roomsArray.length);
+   
+  clients = Object.values(newRoom);  
+
   
-  addToArray();
+
+ 
+  
+  
+
+
+
+  
+    
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
 
   if (clients[0]) client0ID.id = clients[0].id;
   if (clients[1]) client1ID.id = clients[1].id;  
@@ -73,8 +122,7 @@ io.on("connection", socket => {
   socket.on('send-chat-message', message => io.emit('chat-message', {message: message, name: users[socket.id]}));  
   /* end of messenger stuff */  
   
-  console.log('before CLIENTS array: ' + clients);  
-  console.log('before VIEWERS array: ' + viewerArray);   
+  
   
 
   const fn = () => {  
@@ -216,4 +264,5 @@ io.on("connection", socket => {
 
 webServer.listen(PORT, HOST, IP, () => {
     console.log(`Server running at http://${IP}:${PORT}/`);
+
 });

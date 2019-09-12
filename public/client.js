@@ -1,4 +1,8 @@
+// "use strict";
+
 const socket = io.connect();
+
+
 
 const $  = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
@@ -49,6 +53,29 @@ const viewTikTakToe = () => {
     </div>
     `
   )};
+
+const inactivityTime = function () {
+  let time;
+  window.onload = resetTimer;  
+  document.onmousemove = resetTimer;
+  document.onkeypress = resetTimer;
+
+  function logout() {
+    console.log('log-out');
+    socket.emit('socket-timeout', socket.id); 
+    console.log(socket.id);         
+  };
+
+  function resetTimer() {
+    console.log('resetTimer');
+    clearTimeout(time);
+    time = setTimeout(logout, 20000);      
+  };
+};
+
+inactivityTime(); 
+
+console.log(socket.id);
   
 const messageWait = () => $("#info3").innerHTML = "Please wait for your opponent";
 

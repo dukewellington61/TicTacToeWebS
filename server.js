@@ -32,10 +32,18 @@ function createRoom(socket) {
     player1: socket,
     fn: () => {  
 
-      let arr = [];
+      let arr = new Array(2);
+      // let arr = [];
 
-      arr.push(obj.player1);
-      if (obj.player2 != undefined) arr.push(obj.player2);      
+      if (obj.player1 != undefined) arr[0] = obj.player1;
+      if (obj.player2 != undefined) arr[1] = obj.player2;    
+      
+      // if (obj.player1 != undefined) arr.push(obj.player1);
+      // if (obj.player2 != undefined) arr.push(obj.player2);     
+      
+      console.log('arr: ' + arr);
+      console.log('obj.player1: ' + obj.player1);
+      console.log('obj.player2: ' + obj.player2);
 
       const newGame = gameModule.Game();
       gamesArray.push(newGame);
@@ -52,7 +60,7 @@ function createRoom(socket) {
       if (arr.length == 1) socket.emit("messageWait");
       arr.forEach( player => player.emit("messageStart"));
   
-      if (obj.player1 && obj.player2) {
+      if (obj.player1 != undefined && obj.player2 != undefined) {
         arr.forEach( player => player.on('newGame', () => {
           obj.player1.emit('enableClient0');
           newGame.gameField = ["","","","","","","","",""];
@@ -98,7 +106,7 @@ function createRoom(socket) {
           arr.forEach( player => player.emit('emptyInfo3'));
           
           obj.player2.emit('disableClient1');
-          obj.player1.emit('enableClient0');   
+          obj.player1.emit('enableClient0');     
           arr.forEach( player => player.emit("Am Zug: ...", startPlayer));        
   
           if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
@@ -108,7 +116,59 @@ function createRoom(socket) {
           };        
           arr.forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
         });
-      };   
+      };     
+
+
+      const userTimeOut = id => {      
+
+        console.log('userTimeOut');                 
+        
+        if (obj.player1 && id == obj.player1.id) {  
+          console.log('conditional 1');           
+          delete arr[0];
+          delete obj.player1;
+          console.log(obj.player1);  
+          return
+        };
+
+        if (obj.player2 && id == obj.player2.id) {  
+          console.log('conditional 2');        
+          delete arr[1];
+          delete obj.player2;
+          console.log(obj.player2);
+        };         
+      };        
+
+      arr.forEach( player => player.on('socket-timeout', id => userTimeOut(id))); 
+      
+    
+      const fnPlayerDisconnect = socket => {
+        if (obj.player1 && socket.id == obj.player1.id) delete obj.player1;
+        if (obj.player2 && socket.id == obj.player2.id) delete obj.player2;
+        delete arr[arr.indexOf(socket)];        
+        newGame.gameField = ["","","","","","","","",""];
+        arr.forEach( player => player.emit('gameField', newGame.gameField)); 
+        arr.forEach( player => player.emit('messagePlayerDisconnected'));
+        arr.forEach( player => player.emit("messageWait"));
+        arr.forEach( player => player.emit('emptyInfo2'));
+        arr.forEach( player => player.emit('hide-start-button'));      
+        if (!obj.player1 && !obj.player2) clients = [];     
+        
+        console.log('2 after CLIENTS array: ' + arr + arr.length);
+        
+        
+        socket.id === client0ID ? delete client0ID.id : delete client1ID.id;         
+        
+        obj.fn();
+    
+        arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
+      };
+    
+    
+      arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));   
+      
+    
+
       /* messenger stuff */
       socket.on('new-user', name => {    
         users[socket.id] = name;
@@ -121,11 +181,8 @@ function createRoom(socket) {
     
   }
   return obj;
-}
+};
 
-// function Room (socket) {
-//   this.player1 = socket
-// }
 
 let roomsArray = [];
 
@@ -140,22 +197,19 @@ io.on("connection", socket => {
 
     if (roomsArray.length === 0) {    
       gameRoom = createRoom(socket);      
-      roomsArray.push(gameRoom);       
-      console.log('conditional 1');    
+      roomsArray.push(gameRoom);         
       gameRoom.fn();     
       return;
     };   
 
     if (roomsArray.every( el => el.player1 != undefined) && roomsArray.every( el => el.player2 != undefined)) {    
       gameRoom = createRoom(socket);      
-      roomsArray.push(gameRoom);   
-      console.log('conditional 2');           
+      roomsArray.push(gameRoom);             
       return;
     };   
     
     if (roomsArray.some( el => el.player2 == undefined)) {
-      gameRoom.player2 = socket;   
-      console.log('conditional 3');      
+      gameRoom.player2 = socket;             
       gameRoom.fn(); 
       return;      
     };  
@@ -171,67 +225,7 @@ io.on("connection", socket => {
 
   
 
-  // const addViewerToClients = () => {    
-  //   if (viewerArray[0]) {      
-  //     if (newRoom.player1 == undefined) {
-  //       newRoom.player1 = viewerArray[0];        
-  //     };
-
-  //     if (newRoom.player2 == undefined) {
-  //       newRoom.player2 = viewerArray[0];       
-  //     };    
-
-  //     removeViewerFromArray();
-  //     newRoom.player1.emit('page-refresh'); 
-  //     if (newRoom.player2) delete newRoom.player1;       
-      
-  //     fn();
-  //     console.log('1 after CLIENTS array: ' + clients + clients.length);
-  //     console.log('1 after VIEWERS array: ' + viewerArray + viewerArray.length);   
-  //   };                   
-  // };   
-
-  // const removeViewerFromArray = () => viewerArray.shift();
-
-  // const fnPlayerDisconnect = socket => {
-  //   delete clients[clients.indexOf(socket)];        
-  //   gameObject.gameField = ["","","","","","","","",""];
-  //   for (var key in newRoom) newRoom[key].emit('gameField', newGame.gameField); 
-  //   for (var key in newRoom) newRoom[key].emit('messagePlayerDisconnected');
-  //   for (var key in newRoom) newRoom[key].emit("messageWait");
-  //   for (var key in newRoom) newRoom[key].emit('emptyInfo2');
-  //   for (var key in newRoom) newRoom[key].emit('hide-start-button');      
-  //   if (!newRoom.player1 && !newRoom.player2) clients = [];     
-    
-  //   console.log('2 after CLIENTS array: ' + clients + clients.length);
-  //   console.log('2 after VIEWERS array: ' + viewerArray + viewerArray.length);    
-    
-  //   socket.id === client0ID ? delete client0ID.id : delete client1ID.id;   
-
-  //   setTimeout( () => !client0ID.id ? addViewerToClients() : undefined, 300);
-
-  //   setTimeout( () => !client1ID.id ? addViewerToClients() : undefined, 300);   
-    
-  //   fn();
-
-  //   clients.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
-  // };
-
-
-  // clients.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
-
-  // const fnViewerDisconnect = socket => {   
-  //   let disconnectedSocket = viewerArray[viewerArray.indexOf(socket)];       
-  //   let FilterViewerArray = viewerArray.filter(el => el != disconnectedSocket);
-  //   viewerArray = FilterViewerArray;
-    
-  //   console.log('3 after CLIENTS array: ' + clients + clients.length);
-  //   console.log('3 after VIEWERS array: ' + viewerArray + viewerArray.length);
-  //   fn();
-  //   viewerArray.map(socket => socket.on('disconnect', () => fnViewerDisconnect(socket)));
-  // };
-
-  // viewerArray.map(socket => socket.on('disconnect', () => fnViewerDisconnect(socket)));   
+  
 });
 
 webServer.listen(PORT, HOST, IP, () => {

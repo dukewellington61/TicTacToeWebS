@@ -15,7 +15,8 @@ const io = socketIo(webServer);
 
 const gameModule = require("./GameModule.js");
 
-const users = {};
+
+  
 
 let client0ID = {};
 
@@ -26,24 +27,26 @@ let viewerArray = [];
 
 let gamesArray =[];
 
-function createRoom(socket) {
+
+
+function createRoom(socket) {  
 
   const obj = {
     player1: socket,
-    fn: () => {  
+    fn: () => {         
 
       let arr = new Array(2);
       // let arr = [];
 
-      if (obj.player1 != undefined) arr[0] = obj.player1;
-      if (obj.player2 != undefined) arr[1] = obj.player2;    
+      if (obj.player1) arr[0] = obj.player1;
+      if (obj.player2) arr[1] = obj.player2;    
       
       // if (obj.player1 != undefined) arr.push(obj.player1);
       // if (obj.player2 != undefined) arr.push(obj.player2);     
       
-      console.log('arr: ' + arr);
-      console.log('obj.player1: ' + obj.player1);
-      console.log('obj.player2: ' + obj.player2);
+      // console.log('arr: ' + arr);
+      // console.log('obj.player1: ' + obj.player1);
+      // console.log('obj.player2: ' + obj.player2);
 
       const newGame = gameModule.Game();
       gamesArray.push(newGame);
@@ -121,21 +124,21 @@ function createRoom(socket) {
 
       const userTimeOut = id => {      
 
-        console.log('userTimeOut');                 
+        // console.log('userTimeOut');                 
         
         if (obj.player1 && id == obj.player1.id) {  
-          console.log('conditional 1');           
+          // console.log('conditional 1');           
           delete arr[0];
           delete obj.player1;
-          console.log(obj.player1);  
+          // console.log(obj.player1);  
           return
         };
 
         if (obj.player2 && id == obj.player2.id) {  
-          console.log('conditional 2');        
+          // console.log('conditional 2');        
           delete arr[1];
           delete obj.player2;
-          console.log(obj.player2);
+          // console.log(obj.player2);
         };         
       };        
 
@@ -152,9 +155,9 @@ function createRoom(socket) {
         arr.forEach( player => player.emit("messageWait"));
         arr.forEach( player => player.emit('emptyInfo2'));
         arr.forEach( player => player.emit('hide-start-button'));      
-        if (!obj.player1 && !obj.player2) clients = [];     
+        if (!obj.player1 && !obj.player2) arr = [];     
         
-        console.log('2 after CLIENTS array: ' + arr + arr.length);
+        // console.log('2 after CLIENTS array: ' + arr + arr.length);
         
         
         socket.id === client0ID ? delete client0ID.id : delete client1ID.id;         
@@ -169,48 +172,81 @@ function createRoom(socket) {
       
     
 
-      /* messenger stuff */
-      socket.on('new-user', name => {    
-        users[socket.id] = name;
-        socket.broadcast.emit('user-connected', name);    
-      });  
+      /* messenger stuff */   
 
-      socket.on('send-chat-message', message => arr.forEach( player => player.emit('chat-message', {message: message, name: users[socket.id]})));  
-      /* end of messenger stuff */    
-    }
+      
+      
+             
+         
+        socket.on('new-user', name => {    
+          if (obj.player1 && socket.id == obj.player1.id) users[obj.player1.id] = name;
+          if (obj.player2 && socket.id == obj.player2.id) users[obj.player2.id] = name;
+          socket.broadcast.emit('user-connected', name);  
+          console.log(users);
+        
+      
+          
+        arr.forEach ( player => player.on('send-chat-message', message => arr.forEach( player => player.emit('chat-message', {message: message, name: users[socket.id]}))));  
+
+      });
+
+      
     
-  }
+      /* end of messenger stuff */    
+    }    
+    
+  };
   return obj;
 };
 
 
 let roomsArray = [];
 
+let users = {};
+
 let gameRoom = {};
 
-io.on("connection", socket => {    
+io.on("connection", socket => {     
+
+  socket.on('new-user', name => {    
+    users[socket.id] = name;
+    socket.broadcast.emit('user-connected', name);  
+    console.log(users);
+  });
       
   socket.emit('push');
-  socket.emit('hide-start-button');    
+  socket.emit('hide-start-button');     
+
 
   const roomsAndPlayaz = () => {      
 
-    if (roomsArray.length === 0) {    
+    if (!gameRoom.player1 && !gameRoom.player2) {    
+      // console.log('conditional 1');
       gameRoom = createRoom(socket);      
       roomsArray.push(gameRoom);         
-      gameRoom.fn();     
-      return;
+      gameRoom.fn();           
+      return;      
     };   
-
-    if (roomsArray.every( el => el.player1 != undefined) && roomsArray.every( el => el.player2 != undefined)) {    
+        
+    if (gameRoom.player1 && gameRoom.player2) {   
+      // console.log('conditional 2'); 
       gameRoom = createRoom(socket);      
-      roomsArray.push(gameRoom);             
+      roomsArray.push(gameRoom);  
+      gameRoom.fn();                  
       return;
     };   
     
-    if (roomsArray.some( el => el.player2 == undefined)) {
+    if (gameRoom.player1 && !gameRoom.player2) {
+      // console.log('conditional 3'); 
       gameRoom.player2 = socket;             
-      gameRoom.fn(); 
+      gameRoom.fn();     
+      return;      
+    };  
+
+    if (!gameRoom.player1 && gameRoom.player2) {
+      // console.log('conditional 4'); 
+      gameRoom.player1 = socket;             
+      gameRoom.fn();        
       return;      
     };  
   };

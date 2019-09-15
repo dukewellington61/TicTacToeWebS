@@ -69,7 +69,7 @@ const inactivityTime = function () {
   function resetTimer() {
     console.log('resetTimer');
     clearTimeout(time);
-    time = setTimeout(logout, 20000);      
+    time = setTimeout(logout, 60000);      
   };
 };
 
@@ -154,7 +154,7 @@ const appendMessage = data => {
   const messageElement = document.createElement('div');  
   if (inputElement) inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;  
   else sessionStorage.getItem('player-name') == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;
-  messageContainer.appendChild(messageElement);
+  messageContainer.appendChild(messageElement);  
 };
 
 const createPlayerNameInputField = () => { 
@@ -190,7 +190,7 @@ const displayWelcomePlayer = (ticTacToeGameField, name) => {
   ticTacToeGameField.appendChild(welcomeElement);  
   document.addEventListener('click', () => welcomeElement.classList.add('welcome-field-display-none'));
 
-  if (sessionStorage.getItem('player-name') == null) socket.emit('new-user', name);
+  if (sessionStorage.getItem('player-name') == null) socket.emit('new-user', name,socket.id);
   else socket.emit('new-user', sessionStorage.getItem('player-name'));
 };  
 
@@ -198,7 +198,7 @@ messageForm.addEventListener('submit', e => {
   e.preventDefault();
   const message = messageInput.value;
   socket.emit('send-chat-message', message);
-  messageInput.value = " ";
+  messageInput.value = " ";  
 });
 
 const broadCastNewUsersName = name => {

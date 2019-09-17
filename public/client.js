@@ -61,13 +61,13 @@ const inactivityTime = function () {
   document.onkeypress = resetTimer;
 
   function logout() {
-    console.log('log-out');
+    // console.log('log-out');
     socket.emit('socket-timeout', socket.id); 
-    console.log(socket.id);         
+    // console.log(socket.id);         
   };
 
   function resetTimer() {
-    console.log('resetTimer');
+    // console.log('resetTimer');
     clearTimeout(time);
     time = setTimeout(logout, 60000);      
   };
@@ -75,7 +75,7 @@ const inactivityTime = function () {
 
 inactivityTime(); 
 
-console.log(socket.id);
+// console.log(socket.id);
   
 const messageWait = () => $("#info3").innerHTML = "Please wait for your opponent";
 
@@ -149,12 +149,27 @@ const messageGameStarted = () => $("#info3").innerHTML = "The game has started."
 
 /* more messenger stuff */
 
+const emitOnce = {};
+
 const appendMessage = data => {  
+
+  
+  
   const inputElement = document.getElementById('player-name-input');   
   const messageElement = document.createElement('div');  
+  
   if (inputElement) inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;  
   else sessionStorage.getItem('player-name') == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;
-  messageContainer.appendChild(messageElement);  
+
+  
+  if (emitOnce.done == true) return;
+
+  else {
+    messageContainer.appendChild(messageElement); 
+    emitOnce.done = true;
+    setTimeout( () => emitOnce.done = false, 5);
+  };
+  
 };
 
 const createPlayerNameInputField = () => { 
@@ -174,30 +189,32 @@ const createPlayerNameInputField = () => {
       if (e.keyCode === 13) {
         inputElement.classList.add('player-name-input-remove');
         displayWelcomePlayer(ticTacToeGameField, inputElement.value); 
-        sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));      
+        sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));              
       };
     }); 
   }
 
+  
   else displayWelcomePlayer(ticTacToeGameField, sessionStorage.getItem('player-name')); 
   
 };
 
-const displayWelcomePlayer = (ticTacToeGameField, name) => {  
+const displayWelcomePlayer = (ticTacToeGameField, name) => {    
   const welcomeElement = document.createElement('div');
   welcomeElement.id = 'welcome-element';
   welcomeElement.innerText = `Welcome ${name}`;
   ticTacToeGameField.appendChild(welcomeElement);  
   document.addEventListener('click', () => welcomeElement.classList.add('welcome-field-display-none'));
 
-  if (sessionStorage.getItem('player-name') == null) socket.emit('new-user', name,socket.id);
+  if (sessionStorage.getItem('player-name') == null) socket.emit('new-user', name);
   else socket.emit('new-user', sessionStorage.getItem('player-name'));
 };  
 
 messageForm.addEventListener('submit', e => {
+  // console.log('submit message');
   e.preventDefault();
   const message = messageInput.value;
-  socket.emit('send-chat-message', message);
+  socket.emit('send-chat-message', data = {message: message, id: socket.id});
   messageInput.value = " ";  
 });
 

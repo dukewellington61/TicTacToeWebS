@@ -84,7 +84,7 @@ function createRoom(socket) {
         obj.player1.emit('disableClient0');
         obj.player2.emit('disableClient1');
                     
-        obj.player1.on('move', (field) => {
+        obj.player1.on('move', (field) => {          
           const message = newGame.move(startPlayer, field);        
           arr.forEach( player => player.emit('gameField', newGame.gameField));   
           arr.forEach( player => player.emit('emptyInfo3'));
@@ -102,7 +102,7 @@ function createRoom(socket) {
           arr.forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
         });
   
-        obj.player2.on('move', (field) => {
+        obj.player2.on('move', (field) => {          
           const message = newGame.move(secondPlayer, field);        
           arr.forEach( player => player.emit('gameField', newGame.gameField));   
           
@@ -141,8 +141,8 @@ function createRoom(socket) {
           // console.log(obj.player2);
         };         
       };        
-
-      arr.forEach( player => player.on('socket-timeout', id => userTimeOut(id))); 
+      /* TIME OUT FUNCTION CALL - do not delete! */
+      // arr.forEach( player => player.on('socket-timeout', id => userTimeOut(id))); 
       
     
       const fnPlayerDisconnect = socket => {
@@ -168,33 +168,72 @@ function createRoom(socket) {
       };
     
     
-      arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));   
-      
-    
+      arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));  
 
-      /* messenger stuff */   
-
-      
-      
-             
          
-        socket.on('new-user', name => {    
-          if (obj.player1 && socket.id == obj.player1.id) users[obj.player1.id] = name;
-          if (obj.player2 && socket.id == obj.player2.id) users[obj.player2.id] = name;
-          socket.broadcast.emit('user-connected', name);  
-          console.log(users);
-        
-      
-          
-        arr.forEach ( player => player.on('send-chat-message', message => arr.forEach( player => player.emit('chat-message', {message: message, name: users[socket.id]}))));  
 
-      });
+      if (obj.player1) {
+        obj.player1.on('new-user', name => {
+          if (obj.player1 && !users[obj.player1.id]) {
+            console.log('conditional 1 ' + name);         
+            users[obj.player1.id] = name;
+            console.log(users);
+            return;
+          };
+        });
+      };
 
+      if (obj.player2) {
+        obj.player2.on('new-user', name => {
+          if (obj.player2 && users[obj.player1.id]) {
+              console.log('conditional 2 ' + name);         
+              users[obj.player2.id] = name;
+              console.log(users);
+              return;
+          };
+        });
+      };
+    
+
+    
+
+      // if (obj.player1) obj.player1.on('send-chat-message', data => {
+      //   if (data.id == obj.player1.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player1.id]}));  
+      //   if (data.id == obj.player2.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player2.id]}));          
+      // });
+
+      // if (obj.player2) obj.player2.on('send-chat-message', data => {
+      //   if (data.id == obj.player1.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player1.id]}));  
+      //   if (data.id == obj.player2.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player2.id]}));          
+      // });
+
+      // if (obj.player1) obj.player1.on('send-chat-message', data => {
+      //   obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});  
+      //   if (obj.player2) obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});            
+      // });
+
+      // if (obj.player2) obj.player2.on('send-chat-message', data => {
+      //   if (obj.player1) obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});  
+      //   obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});            
+      // });
+
+
+      // if (obj.player1) obj.player1.on('send-chat-message', data => arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'})));          
+      // if (obj.player2) obj.player2.on('send-chat-message', data => arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'})));          
+      // if (obj.player2) obj.player2.on('send-chat-message', data => obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'})); 
       
-    
-      /* end of messenger stuff */    
-    }    
-    
+      // arr.forEach( player => player.on('send-chat-message', data => {
+      //   if (obj.player1) obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});
+      //   if (obj.player2) obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});
+      // }));
+
+      // arr.forEach( player => player.on('send-chat-message', data => {
+      //   if (obj.player1) obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});
+      //   if (obj.player2) obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});
+      // }));
+
+      arr.forEach( player => player.on('send-chat-message', data => arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'}))));
+    }  
   };
   return obj;
 };
@@ -208,12 +247,8 @@ let gameRoom = {};
 
 io.on("connection", socket => {     
 
-  socket.on('new-user', name => {    
-    users[socket.id] = name;
-    socket.broadcast.emit('user-connected', name);  
-    console.log(users);
-  });
-      
+ 
+
   socket.emit('push');
   socket.emit('hide-start-button');     
 
@@ -224,7 +259,8 @@ io.on("connection", socket => {
       // console.log('conditional 1');
       gameRoom = createRoom(socket);      
       roomsArray.push(gameRoom);         
-      gameRoom.fn();           
+      gameRoom.fn();   
+    
       return;      
     };   
         
@@ -232,28 +268,31 @@ io.on("connection", socket => {
       // console.log('conditional 2'); 
       gameRoom = createRoom(socket);      
       roomsArray.push(gameRoom);  
-      gameRoom.fn();                  
+      gameRoom.fn();
+                         
       return;
     };   
     
     if (gameRoom.player1 && !gameRoom.player2) {
       // console.log('conditional 3'); 
       gameRoom.player2 = socket;             
-      gameRoom.fn();     
+      gameRoom.fn();    
+     
       return;      
     };  
 
     if (!gameRoom.player1 && gameRoom.player2) {
       // console.log('conditional 4'); 
       gameRoom.player1 = socket;             
-      gameRoom.fn();        
+      gameRoom.fn();  
+          
       return;      
     };  
   };
 
   roomsAndPlayaz();  
 
-  
+ 
   
 
 

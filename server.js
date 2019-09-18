@@ -60,7 +60,7 @@ function createRoom(socket) {
   
       arr.forEach( player => player.emit("Am Zug: ...", startPlayer));
   
-      if (arr.length == 1) socket.emit("messageWait");
+      if (!obj.player1 || !obj.player2) socket.emit("messageWait");
       arr.forEach( player => player.emit("messageStart"));
   
       if (obj.player1 != undefined && obj.player2 != undefined) {
@@ -122,33 +122,59 @@ function createRoom(socket) {
       };     
 
 
-      const userTimeOut = id => {      
+      // const userTimeOut = id => {      
 
-        // console.log('userTimeOut');                 
+      //   console.log('before player1: ' + obj.player1);   
+      //   console.log('before player2: ' + obj.player2);               
         
-        if (obj.player1 && id == obj.player1.id) {  
-          // console.log('conditional 1');           
-          delete arr[0];
-          delete obj.player1;
-          // console.log(obj.player1);  
-          return
-        };
+      //   if (obj.player1 && id == obj.player1.id) {  
+      //     // console.log('conditional 1');           
+      //     delete arr[0];
+      //     delete obj.player1;
+      //     console.log('player 1: ' + obj.player1);
+      //     return
+      //   };
 
-        if (obj.player2 && id == obj.player2.id) {  
-          // console.log('conditional 2');        
-          delete arr[1];
-          delete obj.player2;
-          // console.log(obj.player2);
-        };         
-      };        
-      /* TIME OUT FUNCTION CALL - do not delete! */
-      // arr.forEach( player => player.on('socket-timeout', id => userTimeOut(id))); 
+      //   if (obj.player2 && id == obj.player2.id) {  
+      //     // console.log('conditional 2');        
+      //     delete arr[1];
+      //     delete obj.player2;
+      //     console.log('player 2: ' + obj.player2);
+      //   };         
+      // };        
+      
       
     
-      const fnPlayerDisconnect = socket => {
-        if (obj.player1 && socket.id == obj.player1.id) delete obj.player1;
-        if (obj.player2 && socket.id == obj.player2.id) delete obj.player2;
-        delete arr[arr.indexOf(socket)];        
+      const fnPlayerDisconnect = id => {
+        // console.log('fnPlayerDisconnect');
+
+        // console.log('before player1: ' + obj.player1);   
+        // console.log('before player2: ' + obj.player2);    
+
+        if (obj.player1 && id == obj.player1.id) {
+          delete obj.player1;
+          delete arr[0];
+          if (obj.player2) {
+            console.log('test1');
+            // obj.player2.emit('messagePlayerDisconnected');
+            // obj.player2.emit('messageWait');
+            // obj.player2.emit('emptyInfo2');
+          };          
+          // console.log('player 1: ' + obj.player1);
+        };
+
+        if (obj.player2 && id == obj.player2.id) {
+          delete obj.player2;
+          delete arr[1];
+          if (obj.player1) {
+            console.log('test2');
+            // obj.player1.emit('messagePlayerDisconnected');
+            // obj.player1.emit('messageWait');
+            // obj.player1.emit('emptyInfo2');
+          };
+          // console.log('player 2: ' + obj.player2);
+        };
+                
         newGame.gameField = ["","","","","","","","",""];
         arr.forEach( player => player.emit('gameField', newGame.gameField)); 
         arr.forEach( player => player.emit('messagePlayerDisconnected'));
@@ -162,13 +188,16 @@ function createRoom(socket) {
         
         socket.id === client0ID ? delete client0ID.id : delete client1ID.id;         
         
-        obj.fn();
+        // obj.fn();
     
-        arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));
+        // arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket.id)));
       };
     
     
-      arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket)));  
+      arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket.id)));  
+
+      /* TIME OUT FUNCTION CALL - do not delete! */
+      arr.forEach( player => player.on('socket-timeout', id => fnPlayerDisconnect(id))); 
 
          
 
@@ -192,45 +221,7 @@ function createRoom(socket) {
               return;
           };
         });
-      };
-    
-
-    
-
-      // if (obj.player1) obj.player1.on('send-chat-message', data => {
-      //   if (data.id == obj.player1.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player1.id]}));  
-      //   if (data.id == obj.player2.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player2.id]}));          
-      // });
-
-      // if (obj.player2) obj.player2.on('send-chat-message', data => {
-      //   if (data.id == obj.player1.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player1.id]}));  
-      //   if (data.id == obj.player2.id) arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[obj.player2.id]}));          
-      // });
-
-      // if (obj.player1) obj.player1.on('send-chat-message', data => {
-      //   obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});  
-      //   if (obj.player2) obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});            
-      // });
-
-      // if (obj.player2) obj.player2.on('send-chat-message', data => {
-      //   if (obj.player1) obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});  
-      //   obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});            
-      // });
-
-
-      // if (obj.player1) obj.player1.on('send-chat-message', data => arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'})));          
-      // if (obj.player2) obj.player2.on('send-chat-message', data => arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'})));          
-      // if (obj.player2) obj.player2.on('send-chat-message', data => obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'})); 
-      
-      // arr.forEach( player => player.on('send-chat-message', data => {
-      //   if (obj.player1) obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});
-      //   if (obj.player2) obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});
-      // }));
-
-      // arr.forEach( player => player.on('send-chat-message', data => {
-      //   if (obj.player1) obj.player1.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'});
-      //   if (obj.player2) obj.player2.emit('chat-message', {message: data.message, name: users[data.id], player: 'player2'});
-      // }));
+      };   
 
       arr.forEach( player => player.on('send-chat-message', data => arr.forEach( player => player.emit('chat-message', {message: data.message, name: users[data.id], player: 'player1'}))));
     }  

@@ -1,0 +1,42 @@
+add scrolling to chat window --- solved
+
+check if after socket disconnect and new socket replace old socket chat functionality still works proper --- solved
+
+another problem: all the message for disconnect aren't displayed except when triggered by timeout. --- solved
+
+
+
+
+
+
+after play game and won start button shows up on second socket and doesn't disappear on click
+
+personalize that shit:
+instead of 'player such and suchs turn' --- 'opponent's name turn' or 'your turn, name'
+instead of 'game over: player ...has won' --- 'game over: you or oppenent's name has won respectively
+
+it says 'two players connected' but there is only one player.
+
+on finish input name there should be your playing agains name of opponent
+
+make name input mandatory - on opening app input field pops up to make it clear to user that name has to be entered befor game can begin.
+
+notify players about disconnect or new connect
+
+what if: two players in a room, one player gets disconnected on timeout 
+1 is the other player still connected?
+2 is the other player notified about the disconnect?
+3 can another player enter the room?
+
+if one socket is disconnected on timeout (doesn't have to be on timeout - normal disconnect does the same thing), if I click a button on the other socket I get:
+
+home/theironduke/webdev/JS_Kurs/Teil_4/TicTacToeWebS/server.js:93
+          obj.player2.emit('enableClient1');        
+                      ^
+
+TypeError: Cannot read property 'emit' of undefined
+   etc....
+
+this shouldn't happen because this line is wrapped in a conditional that ensures the existence of obj.player2 (and obj.player1 for that matter).
+
+

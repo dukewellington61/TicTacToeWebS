@@ -105,6 +105,7 @@ p {
 }
 
 #message-container {
+  overflow-y: auto;
   height: 10em;
   width: 15em;
   border-style: solid;

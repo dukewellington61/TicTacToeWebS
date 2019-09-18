@@ -61,15 +61,23 @@ const inactivityTime = function () {
   document.onkeypress = resetTimer;
 
   function logout() {
-    // console.log('log-out');
+    console.log('log-out');
     socket.emit('socket-timeout', socket.id); 
+    emptyInfo1();
+    emptyInfo2();
+    emptyInfo3();
+    logoutInfo();
+        
+
+    socket.off('messageWait');
+    socket.off('messagePlayerDisconnected');
     // console.log(socket.id);         
   };
 
   function resetTimer() {
-    // console.log('resetTimer');
+    console.log('resetTimer');
     clearTimeout(time);
-    time = setTimeout(logout, 60000);      
+    time = setTimeout(logout, 10000);      
   };
 };
 
@@ -127,9 +135,13 @@ const enableClient1 = () => {
 
 const endMessage = message => $("#info1").innerHTML = message;
 
-const emptyInfo3 = () => $("#info3").innerHTML = "";
+const emptyInfo1 = () => $("#info1").innerHTML = "";
 
 const emptyInfo2 = () => $("#info2").innerHTML = "";
+
+const emptyInfo3 = () => $("#info3").innerHTML = "";
+
+const logoutInfo = () => $("#info1").innerHTML = "Timeout. You're logged out";
 
 const viewerMessage = () =>  {
   $("#info1").innerHTML = "You're in observer mode";
@@ -151,16 +163,12 @@ const messageGameStarted = () => $("#info3").innerHTML = "The game has started."
 
 const emitOnce = {};
 
-const appendMessage = data => {  
-
-  
-  
+const appendMessage = data => { 
   const inputElement = document.getElementById('player-name-input');   
   const messageElement = document.createElement('div');  
   
   if (inputElement) inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;  
   else sessionStorage.getItem('player-name') == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;
-
   
   if (emitOnce.done == true) return;
 
@@ -168,8 +176,8 @@ const appendMessage = data => {
     messageContainer.appendChild(messageElement); 
     emitOnce.done = true;
     setTimeout( () => emitOnce.done = false, 5);
-  };
-  
+  };  
+  scrollDown();
 };
 
 const createPlayerNameInputField = () => { 
@@ -193,10 +201,9 @@ const createPlayerNameInputField = () => {
       };
     }); 
   }
-
   
   else displayWelcomePlayer(ticTacToeGameField, sessionStorage.getItem('player-name')); 
-  
+
 };
 
 const displayWelcomePlayer = (ticTacToeGameField, name) => {    
@@ -221,7 +228,13 @@ messageForm.addEventListener('submit', e => {
 const broadCastNewUsersName = name => {
   const usersNameElement = document.getElementById('info4');  
   usersNameElement.innerText = `Your playing against ${name}`;
-}
+};
+
+const scrollDown = () => {
+  const objDiv = document.getElementById("message-container");
+  objDiv.scrollTop = objDiv.scrollHeight;
+};
+
 /* end of more messenger stuff */
 
 

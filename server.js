@@ -33,120 +33,118 @@ function createRoom(socket) {
 
   const obj = {
     player1: socket,
-    fn: () => {         
+    fn: () => {     
 
-      let arr = new Array(2);
-      // let arr = [];
+      const playerTimedOut = {};  
 
-      if (obj.player1) arr[0] = obj.player1;
-      if (obj.player2) arr[1] = obj.player2;    
+     
+
+        let arr = new Array(2);
       
-      // if (obj.player1 != undefined) arr.push(obj.player1);
-      // if (obj.player2 != undefined) arr.push(obj.player2);     
-      
-      // console.log('arr: ' + arr);
-      // console.log('obj.player1: ' + obj.player1);
-      // console.log('obj.player2: ' + obj.player2);
-
-      const newGame = gameModule.Game();
-      gamesArray.push(newGame);
-
-      const startPlayer = newGame.currentPlayer;
-      const secondPlayer = newGame.secondPlayer;       
-  
-      if (obj.player1) obj.player1.emit('startPlayer', startPlayer);
-  
-      if (obj.player2) obj.player2.emit('secondPlayer', startPlayer);
-  
-      arr.forEach( player => player.emit("Am Zug: ...", startPlayer));
-  
-      if (!obj.player1 || !obj.player2) socket.emit("messageWait");
-      arr.forEach( player => player.emit("messageStart"));
-  
-      if (obj.player1 != undefined && obj.player2 != undefined) {
-        arr.forEach( player => player.on('newGame', () => {
-          obj.player1.emit('enableClient0');
-          newGame.gameField = ["","","","","","","","",""];
-          arr.forEach( player => player.emit('gameField', newGame.gameField));  
-          arr.forEach( player => player.emit("messageStart"));
-          obj.player1.emit('startPlayer',startPlayer);
-          obj.player2.emit('secondPlayer',startPlayer);
-          arr.forEach( player => player.emit("Am Zug: ...", startPlayer));
-          obj.player1.emit('hide-start-button');         
-          arr.forEach( player => player.emit('game-has-started'));         
-        }));   
-      };
-  
-      if (obj.player1 && obj.player2) {     
-  
-        obj.player1.emit('show-start-button');
-      
-        obj.player1.emit('disableClient0');
-        obj.player2.emit('disableClient1');
-                    
-        obj.player1.on('move', (field) => {          
-          const message = newGame.move(startPlayer, field);        
-          arr.forEach( player => player.emit('gameField', newGame.gameField));   
-          arr.forEach( player => player.emit('emptyInfo3'));
-          
-          obj.player1.emit('disableClient0');
-          obj.player2.emit('enableClient1');        
-  
-          arr.forEach( player => player.emit("Am Zug: ...", secondPlayer));        
-  
-          if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
-            arr.forEach( player => player.emit('endMessage',message));
-            obj.player1.emit('disableClient0');
-            obj.player2.emit('disableClient1');
-          };
-          arr.forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
-        });
-  
-        obj.player2.on('move', (field) => {          
-          const message = newGame.move(secondPlayer, field);        
-          arr.forEach( player => player.emit('gameField', newGame.gameField));   
-          
-          arr.forEach( player => player.emit('emptyInfo3'));
-          
-          obj.player2.emit('disableClient1');
-          obj.player1.emit('enableClient0');     
-          arr.forEach( player => player.emit("Am Zug: ...", startPlayer));        
-  
-          if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
-            arr.forEach( player => player.emit('endMessage',message));     
-            obj.player1.emit('disableClient0');
-            obj.player2.emit('disableClient1');
-          };        
-          arr.forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
-        });
-      };     
-
-
-      // const userTimeOut = id => {      
-
-      //   console.log('before player1: ' + obj.player1);   
-      //   console.log('before player2: ' + obj.player2);               
+        if (obj.player1) arr[0] = obj.player1;
+        if (obj.player2) arr[1] = obj.player2;          
         
-      //   if (obj.player1 && id == obj.player1.id) {  
-      //     // console.log('conditional 1');           
-      //     delete arr[0];
-      //     delete obj.player1;
-      //     console.log('player 1: ' + obj.player1);
-      //     return
-      //   };
 
-      //   if (obj.player2 && id == obj.player2.id) {  
-      //     // console.log('conditional 2');        
-      //     delete arr[1];
-      //     delete obj.player2;
-      //     console.log('player 2: ' + obj.player2);
-      //   };         
-      // };        
+        const newGame = gameModule.Game();
+        gamesArray.push(newGame);
+
+        const startPlayer = newGame.currentPlayer;
+        const secondPlayer = newGame.secondPlayer;     
+        
+        const fnPlayerTimedOut = id => {          
+  
+          if (obj.player1 && id == obj.player1.id) {
+            playerTimedOut.player1 = true;
+            console.log (playerTimedOut);
+          };
+  
+          if (obj.player2 && id == obj.player2.id) playerTimedOut.player2 = true;
+          console.log (playerTimedOut);
+          };
+        
+          if (playerTimedOut.player1 === true || playerTimedOut.player2 === true) return;
+  
+          else {
+    
+            if (obj.player1) obj.player1.emit('startPlayer', startPlayer);
+        
+            if (obj.player2) obj.player2.emit('secondPlayer', startPlayer);
+        
+            arr.forEach( player => player.emit("Am Zug: ...", startPlayer));
+        
+            if (!obj.player1 || !obj.player2) {
+              arr.forEach( player => player.emit("messageWait")); 
+              return;
+            };
+
+            arr.forEach( player => player.emit("messageStart"));
+        
+            if (obj.player1 != undefined && obj.player2 != undefined) {
+              arr.forEach( player => player.on('newGame', () => {
+                obj.player1.emit('enableClient0');
+                newGame.gameField = ["","","","","","","","",""];
+                arr.forEach( player => player.emit('gameField', newGame.gameField));  
+                arr.forEach( player => player.emit("messageStart"));
+                obj.player1.emit('startPlayer',startPlayer);
+                obj.player2.emit('secondPlayer',startPlayer);
+                arr.forEach( player => player.emit("Am Zug: ...", startPlayer));
+                obj.player1.emit('hide-start-button');         
+                arr.forEach( player => player.emit('game-has-started'));         
+              }));   
+            };
+        
+            if (obj.player1 && obj.player2) {     
+        
+              obj.player1.emit('show-start-button');
+            
+              obj.player1.emit('disableClient0');
+              obj.player2.emit('disableClient1');
+                          
+              obj.player1.on('move', (field) => {          
+                const message = newGame.move(startPlayer, field);        
+                arr.forEach( player => player.emit('gameField', newGame.gameField));   
+                arr.forEach( player => player.emit('emptyInfo3'));
+                
+                obj.player1.emit('disableClient0');
+                obj.player2.emit('enableClient1');        
+        
+                arr.forEach( player => player.emit("Am Zug: ...", secondPlayer));        
+        
+                if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
+                  arr.forEach( player => player.emit('endMessage',message));
+                  obj.player1.emit('disableClient0');
+                  obj.player2.emit('disableClient1');
+                };
+                arr.forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
+              });
+        
+              obj.player2.on('move', (field) => {          
+                const message = newGame.move(secondPlayer, field);        
+                arr.forEach( player => player.emit('gameField', newGame.gameField));   
+                
+                arr.forEach( player => player.emit('emptyInfo3'));
+                
+                obj.player2.emit('disableClient1');
+                obj.player1.emit('enableClient0');     
+                arr.forEach( player => player.emit("Am Zug: ...", startPlayer));        
+        
+                if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
+                  arr.forEach( player => player.emit('endMessage',message));     
+                  obj.player1.emit('disableClient0');
+                  obj.player2.emit('disableClient1');
+                };        
+                arr.forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
+              });
+            };     
+          };
+
+      
+      
       
       
     
       const fnPlayerDisconnect = id => {
-        // console.log('fnPlayerDisconnect');
+        console.log('fnPlayerDisconnect');
 
         // console.log('before player1: ' + obj.player1);   
         // console.log('before player2: ' + obj.player2);    
@@ -154,25 +152,11 @@ function createRoom(socket) {
         if (obj.player1 && id == obj.player1.id) {
           delete obj.player1;
           delete arr[0];
-          if (obj.player2) {
-            console.log('test1');
-            // obj.player2.emit('messagePlayerDisconnected');
-            // obj.player2.emit('messageWait');
-            // obj.player2.emit('emptyInfo2');
-          };          
-          // console.log('player 1: ' + obj.player1);
-        };
+        };          
 
         if (obj.player2 && id == obj.player2.id) {
           delete obj.player2;
-          delete arr[1];
-          if (obj.player1) {
-            console.log('test2');
-            // obj.player1.emit('messagePlayerDisconnected');
-            // obj.player1.emit('messageWait');
-            // obj.player1.emit('emptyInfo2');
-          };
-          // console.log('player 2: ' + obj.player2);
+          delete arr[1];          
         };
                 
         newGame.gameField = ["","","","","","","","",""];
@@ -194,10 +178,10 @@ function createRoom(socket) {
       };
     
     
-      arr.map(socket => socket.on('disconnect', () => fnPlayerDisconnect(socket.id)));  
+      arr.map(socket => socket.on('disconnect', () => {fnPlayerDisconnect(socket.id); fnPlayerTimedOut(socket.id)}));  
 
       /* TIME OUT FUNCTION CALL - do not delete! */
-      arr.forEach( player => player.on('socket-timeout', id => fnPlayerDisconnect(id))); 
+      arr.forEach( player => player.on('socket-timeout', id => console.log('test'))); 
 
          
 

@@ -1,5 +1,13 @@
 // "use strict";
 
+
+// the following 3 lines trigger an immediate reload
+// which is necessary because socket.emit('socket-timeout', socket.id); for some reason only fires if the socket has been reloaded at least once 
+if (sessionStorage.getItem('not first load') === null) {
+  sessionStorage.setItem('not first load', JSON.stringify('not first load')); 
+  location.reload();
+};
+
 const socket = io.connect();
 
 
@@ -61,17 +69,14 @@ const inactivityTime = function () {
   document.onkeypress = resetTimer;
 
   function logout() {
-    console.log('log-out');
-    socket.emit('socket-timeout', socket.id); 
+    console.log('log-out');    
     emptyInfo1();
     emptyInfo2();
     emptyInfo3();
     logoutInfo();
-        
-
     socket.off('messageWait');
     socket.off('messagePlayerDisconnected');
-    // console.log(socket.id);         
+    socket.emit('socket-timeout', socket.id);        
   };
 
   function resetTimer() {
@@ -81,7 +86,10 @@ const inactivityTime = function () {
   };
 };
 
-inactivityTime(); 
+
+inactivityTime();
+
+
 
 // console.log(socket.id);
   

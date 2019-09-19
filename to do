@@ -4,6 +4,9 @@ check if after socket disconnect and new socket replace old socket chat function
 
 another problem: all the message for disconnect aren't displayed except when triggered by timeout. --- solved
 
+if only one player player info don't show the according infos. --- solved
+
+function logout() logout fires only, if socket has be reconnected and then times out, not if it is the first load and then times out -- wtf?!? --- solved
 
 
 
@@ -38,5 +41,13 @@ TypeError: Cannot read property 'emit' of undefined
    etc....
 
 this shouldn't happen because this line is wrapped in a conditional that ensures the existence of obj.player2 (and obj.player1 for that matter).
+
+
+
+logged out player is beeing reconnected if the other socket connects or reconnects because of function call in conditionals in function roomsAndPlayaz.
+
+
+
+
 
 

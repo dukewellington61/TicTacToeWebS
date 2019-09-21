@@ -1,14 +1,20 @@
 // "use strict";
 
+const socket = io.connect();
 
 // the following 3 lines trigger an immediate reload
 // which is necessary because socket.emit('socket-timeout', socket.id); for some reason only fires if the socket has been reloaded at least once 
-if (sessionStorage.getItem('not first load') === null) {
-  sessionStorage.setItem('not first load', JSON.stringify('not first load')); 
-  location.reload();
-};
 
-const socket = io.connect();
+// if (sessionStorage.getItem('not first load') === null) {
+//   sessionStorage.setItem('not first load', JSON.stringify('not first load'));   
+//   location.reload();      
+// };
+
+// if (sessionStorage.getItem('not first load')) {
+//   socket.emit('delete player2');
+//   // sessionStorage.clear();
+// };
+
 
 
 
@@ -76,13 +82,13 @@ const inactivityTime = function () {
     logoutInfo();
     socket.off('messageWait');
     socket.off('messagePlayerDisconnected');
-    socket.emit('socket-timeout', socket.id);        
+    socket.emit('socket-timeout', socket.id);          
   };
 
   function resetTimer() {
     console.log('resetTimer');
     clearTimeout(time);
-    time = setTimeout(logout, 10000);      
+    time = setTimeout(logout, 20000);      
   };
 };
 
@@ -205,7 +211,7 @@ const createPlayerNameInputField = () => {
       if (e.keyCode === 13) {
         inputElement.classList.add('player-name-input-remove');
         displayWelcomePlayer(ticTacToeGameField, inputElement.value); 
-        sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));              
+        sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));                     
       };
     }); 
   }
@@ -228,7 +234,7 @@ const displayWelcomePlayer = (ticTacToeGameField, name) => {
 messageForm.addEventListener('submit', e => {
   // console.log('submit message');
   e.preventDefault();
-  const message = messageInput.value;
+  const message = messageInput.value;         
   socket.emit('send-chat-message', data = {message: message, id: socket.id});
   messageInput.value = " ";  
 });

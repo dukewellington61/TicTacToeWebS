@@ -8,9 +8,7 @@ if only one player player info don't show the according infos. --- solved
 
 function logout() logout fires only, if socket has be reconnected and then times out, not if it is the first load and then times out -- wtf?!? --- solved
 
-
-
-
+logged out player is beeing reconnected if the other socket connects or reconnects because of function call in conditionals in function roomsAndPlayaz. --- solved
 
 after play game and won start button shows up on second socket and doesn't disappear on click
 
@@ -44,10 +42,28 @@ this shouldn't happen because this line is wrapped in a conditional that ensures
 
 
 
-logged out player is beeing reconnected if the other socket connects or reconnects because of function call in conditionals in function roomsAndPlayaz.
+function logout() logout fires only, if socket has be reconnected and then times out, not if it is the first load and then times out -- wtf?!? --- solved
+ 
+solution to the above mentioned problem created a new problem: due to immediate reload on open window conditional 1 and 3 fire and both positions in obj and arr are taken 
+
+possible solution: re-implement routine that has been used in previous version (no gamerooms, viewerArray) to ensure that on browser refresh same position in array is taken.
 
 
 
+if open tab --> reload creates obj.player2 --> if implement function delete obj.player2 it fires always. so if I open second tab (obj.player2) it gets deleted as well. 
 
+how can I avoid that?.....
 
+if obj.player1 already exists don't delete second socket
 
+At first I couldn't find a solution to the above mentioned problem
+
+I turned to a completely different aproach in order to properly implement the disconnect idle socket functionality by moving it outside the gameRoom object (and into the socket.on('connect',...) section)
+using the roomsArray to address the correct instance of the gameRoom object:
+
+for (let = 1; i < roomsArray.length; i++) {
+   if (roomsArray[i].player1.id === id) delete roomsArray[i].player1;
+   if (roomsArray[i].player2.id === id) delete roomsArray[i].player2;
+};
+
+The next step is to give me a blank gamefield (no Xs and Os) on idle socket disconnect

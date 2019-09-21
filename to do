@@ -66,4 +66,8 @@ for (let = 1; i < roomsArray.length; i++) {
    if (roomsArray[i].player2.id === id) delete roomsArray[i].player2;
 };
 
-The next step is to give me a blank gamefield (no Xs and Os) on idle socket disconnect
+The next step is to give me a blank gamefield (no Xs and Os) on idle socket disconnect --- solved
+
+I have created a method userArray in gameRoom.obj which creates an userArray. This was necessary because I have turned function fnPlayerDisconnect into a method of gameRoom.obj and the original arr 
+which contained the users wasn't accessible from inside this method. Now I am trying to delete userArray elements in accordance with obj.player1 and obj.player2 but so far only one of the 2 elements
+is beeing deleted. 

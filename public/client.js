@@ -3,7 +3,7 @@
 const socket = io.connect();
 
 // the following 3 lines trigger an immediate reload
-// which is necessary because socket.emit('socket-timeout', socket.id); for some reason only fires if the socket has been reloaded at least once 
+// which is necessary because socket.emit('idle-socket-disconnect', socket.id); for some reason only fires if the socket has been reloaded at least once 
 
 // if (sessionStorage.getItem('not first load') === null) {
 //   sessionStorage.setItem('not first load', JSON.stringify('not first load'));   
@@ -82,7 +82,7 @@ const inactivityTime = function () {
     logoutInfo();
     socket.off('messageWait');
     socket.off('messagePlayerDisconnected');
-    socket.emit('socket-timeout', socket.id);          
+    socket.emit('idle-socket-disconnect', socket.id);          
   };
 
   function resetTimer() {

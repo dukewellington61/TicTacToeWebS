@@ -70,4 +70,58 @@ The next step is to give me a blank gamefield (no Xs and Os) on idle socket disc
 
 I have created a method userArray in gameRoom.obj which creates an userArray. This was necessary because I have turned function fnPlayerDisconnect into a method of gameRoom.obj and the original arr 
 which contained the users wasn't accessible from inside this method. Now I am trying to delete userArray elements in accordance with obj.player1 and obj.player2 but so far only one of the 2 elements
-is beeing deleted. 
+is beeing deleted.
+
+I've solved the problem by simply calling the userArray method from the function playerDisconnect after this function has executed the deletes of player1 and player2. This way the userArray method
+creates an userArray which doesn't contain anything.
+
+So now on idle socket disconnect the gamefield is cleared and chatting is no longer possible.
+
+Next Problem detected: 
+
+after reload socket which has been disconnected on idle socket the chat function doesn't work proberly any more. this doesn't happen if the browser tab is refreshed (no disconnect on idle socket) but 
+the name of player1 in player2's chat window is in quotation marks for some reason.
+
+what are the problems?: 
+
+the player names are not beeing retrieved from session storage  - not true -> they are retrieved but not passed to server and stored in users object (I think)
+
+If the name has to be entered everytime the browser tab is loaded (first load and reload) that wouldn't be a problem
+
+Next step: enter name before start game is mandatory and name is not beeing stored in session Storage
+
+the above has been partly established but if a player is disconnected on idle socket no name entering should be possible. --- solved
+
+
+
+big fat bug: If only player1 exists and enters his name the app breaks with the following: 
+/home/theironduke/webdev/JS_Kurs/Teil_4/TicTacToeWebS/server.js:58
+      if (!obj[obj.player1.id] || !obj[obj.player2.id]) return;
+                                                   ^
+
+TypeError: Cannot read property 'id' of undefined
+
+---- solved
+
+at the moment before name is entered there is no user info at all. add 'Please enter your name' to user info.
+
+also. on disconnect idle socket welcome field and start button are to disappear -- solved
+
+
+
+timer which notifies user about the how long until time out. --- solved
+
+
+your opponent has disconnected is beeing displayed even if a new player has entered the gameRoom. --- solved
+
+
+player2 if inactivity warning is getting interrupted it is still displayed with the last value before interruption
+
+trying to set a conditional: if (durationInSeconds < 11 && name.hasBeenEntered === false) enterNameMessage();  
+but durationInSeconds is always 15 when reset function is called.
+
+I think I might need an switch which is triggered if durationInSeconds < 11.
+
+
+
+

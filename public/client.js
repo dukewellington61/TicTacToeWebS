@@ -2,28 +2,8 @@
 
 const socket = io.connect();
 
-// the following 3 lines trigger an immediate reload
-// which is necessary because socket.emit('idle-socket-disconnect', socket.id); for some reason only fires if the socket has been reloaded at least once 
-
-// if (sessionStorage.getItem('not first load') === null) {
-//   sessionStorage.setItem('not first load', JSON.stringify('not first load'));   
-//   location.reload();      
-// };
-
-// if (sessionStorage.getItem('not first load')) {
-//   socket.emit('delete player2');
-//   // sessionStorage.clear();
-// };
-
-
-
-
 const $  = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
-
-// if (sessionStorage.getItem('first-visit')) socket.emit('reload', sessionStorage.getItem('first-visit') ); 
-// else sessionStorage.setItem('first-visit', JSON.stringify('first visit')); 
-
 
 /* messenger stuff */
 const messageForm = document.getElementById('send-container');
@@ -69,45 +49,69 @@ const viewTikTakToe = () => {
   )};
 
 const inactivityTime = function () {
+  let startDuration = 15000
+  let durationInMilliseconds = startDuration;
+  let durationInSeconds = durationInMilliseconds/1000;
   let time;
+  let intervalVar;
   window.onload = resetTimer;  
-  document.onmousemove = resetTimer;
+  document.onclick = resetTimer;
   document.onkeypress = resetTimer;
 
   function logout() {
-    console.log('log-out');    
+    console.log('log-out');   
+    document.getElementById('player-name-input').classList.add('player-name-input-remove');
     emptyInfo1();
     emptyInfo2();
-    emptyInfo3();
+    emptyInfo3();    
     logoutInfo();
     socket.off('messageWait');
     socket.off('messagePlayerDisconnected');
-    socket.emit('idle-socket-disconnect', socket.id);          
+    socket.emit('idle-socket-disconnect', socket.id);   
+    document.onclick = undefined;
+    document.onkeypress = undefined;       
+  };
+
+  function countDown(val) {
+    if (val != null) durationInSeconds = startDuration/1000;
+
+    durationInSeconds--;
+    
+    if (durationInSeconds < 11) $("#info1").innerHTML = `inactivity disconnect in ${durationInSeconds} seconds`;
+    
+    console.log(durationInSeconds);
+  };
+
+  function stopInterval(intervalVar) {
+    clearInterval(intervalVar);
+    console.log('stopInterval');
   };
 
   function resetTimer() {
     console.log('resetTimer');
-    clearTimeout(time);
-    time = setTimeout(logout, 20000);      
+    clearTimeout(time);   
+    clearInterval(intervalVar);  
+    countDown('reset');
+    
+    if (durationInSeconds < 11) console.log('test');  
+    if (durationInSeconds < 11 && name.hasBeenEntered === true) emptyInfo1();
+    intervalVar = setInterval(() => countDown(), 1000);
+    time = setTimeout(() => {logout(); stopInterval(intervalVar)}, durationInMilliseconds);    
   };
 };
 
-
 inactivityTime();
 
-
-
-// console.log(socket.id);
   
 const messageWait = () => $("#info3").innerHTML = "Please wait for your opponent";
 
 const messageStart = () => $("#info3").innerHTML = "Two players connected. ";
 
-const startPlayerInfo = startPlayer => $("#info1").innerHTML = `You're playing as ${startPlayer}.`;
+const startPlayerInfo = data => $("#info1").innerHTML = `Welcome ${data.name}. You're playing as ${data.startPlayer}.`;
 
-const secondPlayerInfo = startPlayer =>
-startPlayer === 'X' ? $("#info1").innerHTML = "You're playing as O"
-: $("#info1").innerHTML = "You're playing as X";
+const secondPlayerInfo = data =>
+data.startPlayer === 'X' ? $("#info1").innerHTML = `Welcome ${data.name}. You're playing as O`
+: $("#info1").innerHTML = `Welcome ${data.name}. You're playing as X`;
 
 const amZug = startPlayer => $("#info2").innerHTML = `Player ${startPlayer}'s turn`;
 
@@ -155,22 +159,20 @@ const emptyInfo2 = () => $("#info2").innerHTML = "";
 
 const emptyInfo3 = () => $("#info3").innerHTML = "";
 
-const logoutInfo = () => $("#info1").innerHTML = "Timeout. You're logged out";
-
-const viewerMessage = () =>  {
-  $("#info1").innerHTML = "You're in observer mode";
-  $("#info3").innerHTML = 'Sorry, there are two players already.';
-};
-
-const emptyInfo3Viewers = () => $("#info3").innerHTML = "";
+const logoutInfo = () => $("#info1").innerHTML = "Timeout. You're disconnected";
 
 const hideStartButton = () => $('#start-button').setAttribute('hidden', 'true');
 
 const showStartButton = () => $('#start-button').removeAttribute('hidden');
 
-const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent has fled the battlefield.";
+const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent has disconnected.";
 
 const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
+
+const enterNameMessage = () => {
+  setTimeout( () => $("#info1").innerHTML = "Please enter your name.", 200);
+  console.log('enter name');
+};
 
 
 /* more messenger stuff */
@@ -180,9 +182,8 @@ const emitOnce = {};
 const appendMessage = data => { 
   const inputElement = document.getElementById('player-name-input');   
   const messageElement = document.createElement('div');  
-  
-  if (inputElement) inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;  
-  else sessionStorage.getItem('player-name') == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;
+
+  inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;    
   
   if (emitOnce.done == true) return;
 
@@ -194,45 +195,33 @@ const appendMessage = data => {
   scrollDown();
 };
 
+const name = {
+  hasBeenEntered: false
+};
+
 const createPlayerNameInputField = () => { 
   const ticTacToeGameField = document.getElementById('gamefield');
   const inputElement = document.createElement('input');  
 
-  if (sessionStorage.getItem('player-name') == null) {
+  inputElement.type = 'text';
+  inputElement.id = 'player-name-input';
+  inputElement.placeholder = 'Enter your Name';
+  inputElement.autofocus = true;
+  inputElement.required = true;
+  ticTacToeGameField.appendChild(inputElement);   
 
-    inputElement.type = 'text';
-    inputElement.id = 'player-name-input';
-    inputElement.placeholder = 'What is your name, Player?';
-    inputElement.autofocus = true;
-    inputElement.required = true;
-    ticTacToeGameField.appendChild(inputElement);   
-
-    inputElement.addEventListener('keyup', e => {
-      if (e.keyCode === 13) {
-        inputElement.classList.add('player-name-input-remove');
-        displayWelcomePlayer(ticTacToeGameField, inputElement.value); 
-        sessionStorage.setItem('player-name', JSON.stringify(inputElement.value));                     
-      };
-    }); 
-  }
-  
-  else displayWelcomePlayer(ticTacToeGameField, sessionStorage.getItem('player-name')); 
-
+  inputElement.addEventListener('keyup', e => {
+    if (e.keyCode === 13) {
+      inputElement.classList.add('player-name-input-remove');
+      socket.off('enter-name-message');             
+      socket.emit('new-user', inputElement.value); 
+      name.hasBeenEntered = true;
+      console.log(name);
+    };
+  });   
 };
 
-const displayWelcomePlayer = (ticTacToeGameField, name) => {    
-  const welcomeElement = document.createElement('div');
-  welcomeElement.id = 'welcome-element';
-  welcomeElement.innerText = `Welcome ${name}`;
-  ticTacToeGameField.appendChild(welcomeElement);  
-  document.addEventListener('click', () => welcomeElement.classList.add('welcome-field-display-none'));
-
-  if (sessionStorage.getItem('player-name') == null) socket.emit('new-user', name);
-  else socket.emit('new-user', sessionStorage.getItem('player-name'));
-};  
-
-messageForm.addEventListener('submit', e => {
-  // console.log('submit message');
+messageForm.addEventListener('submit', e => {  
   e.preventDefault();
   const message = messageInput.value;         
   socket.emit('send-chat-message', data = {message: message, id: socket.id});
@@ -251,9 +240,6 @@ const scrollDown = () => {
 
 /* end of more messenger stuff */
 
-
-
-
 socket.on('push', () => {
   viewTikTakToe();
   createPlayerNameInputField()
@@ -267,7 +253,7 @@ socket.on('messageWait', () => messageWait());
 
 socket.on('messageStart', () => messageStart());
 
-socket.on('startPlayer', startPlayer => startPlayerInfo(startPlayer));
+socket.on('startPlayer', data => startPlayerInfo(data));
 
 socket.on('secondPlayer', startPlayer => secondPlayerInfo(startPlayer));
 
@@ -299,13 +285,13 @@ socket.on('emptyInfo3', () => emptyInfo3());
 
 socket.on('emptyInfo2', () => emptyInfo2());
 
-socket.on('viewerMessage', () => viewerMessage());
-
 socket.on('messagePlayerDisconnected', () => messagePlayerDisconnected());
 
 socket.on('game-has-started', () => messageGameStarted());
 
-socket.on('page-refresh', () => location.reload());
+socket.on('enter-name-message', () => enterNameMessage());
+
+
 
 
 /* even more messenger stuff */

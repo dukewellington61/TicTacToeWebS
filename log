@@ -122,6 +122,41 @@ but durationInSeconds is always 15 when reset function is called.
 
 I think I might need an switch which is triggered if durationInSeconds < 11.
 
+the above mentioned works but I can't get back to startPlayerInfo and secondPlayerInfo I think. It might by a lot easier to move the idle socket disconnect 
+somewhere else altogether.
 
+I've found a solution by simply store startPlayerInfo and secondPlayerInfo in an object which can be used elsewhere in my code.
+
+
+final challenge:
+
+make it so, that if there is only one player in any given gameRoom a newly connecting player ends up in this gameRoom
+
+conditional 1: no gameRoom - create new gameRoom with player1
+conditional 2: gameRoom is full - create another gameRoom with player1
+conditional 3: gameRoom has player1 - add player2 to existing gameRoom
+conditional 4: gameRoom has player2 - add player1 to existing gameRoom
+
+at the moment - if for example 2 gameRoom and gameRoom 1 has only one player a newly connecting player will create a new gameRoom
+
+Solution: on connect I have to check whether there is a gameRoom in the roomsArray which isn't full.
+
+
+for (let i = 0; i < roomsArray.length; i++) {
+
+   if (roomsArray[i].forEach( player => player === undefined)) {
+
+    if (roomsArray[i].player1 && !roomsArray[i].player2) {
+       console.log('conditional 5'); 
+      gameRoom.player2 = socket;             
+      gameRoom.fn();  
+    };
+
+    if (!roomsArray[i].player1 && roomsArray[i].player2) {
+       console.log('conditional 6'); 
+      gameRoom.player1 = socket;             
+      gameRoom.fn();  
+   };
+};
 
 

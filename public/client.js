@@ -48,18 +48,44 @@ const viewTikTakToe = () => {
     `
   )};
 
+const userName = {
+  hasBeenEntered: false
+};
+
+const createPlayerNameInputField = () => { 
+  const ticTacToeGameField = document.getElementById('gamefield');
+  const inputElement = document.createElement('input');  
+  inputElement.type = 'text';
+  inputElement.id = 'player-name-input';
+  inputElement.placeholder = 'Enter your Name';
+  inputElement.autofocus = true;
+  inputElement.required = true;
+  ticTacToeGameField.appendChild(inputElement);   
+
+  inputElement.addEventListener('keyup', e => {
+    if (e.keyCode === 13) {
+      userName.hasBeenEntered = true;     
+      inputElement.classList.add('player-name-input-remove');                
+      socket.emit('new-user', inputElement.value);         
+    };
+  });   
+};
+
 const inactivityTime = function () {
-  let startDuration = 15000
+  let startDuration = 120000
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;
-  let intervalVar;
+  let intervalVar;  
   window.onload = resetTimer;  
   document.onclick = resetTimer;
   document.onkeypress = resetTimer;
 
-  function logout() {
-    console.log('log-out');   
+  const countDown = {
+    visible: false
+  };  
+
+  function logout() {     
     document.getElementById('player-name-input').classList.add('player-name-input-remove');
     emptyInfo1();
     emptyInfo2();
@@ -72,46 +98,57 @@ const inactivityTime = function () {
     document.onkeypress = undefined;       
   };
 
-  function countDown(val) {
+  function countDownTimer(val) {
     if (val != null) durationInSeconds = startDuration/1000;
 
     durationInSeconds--;
     
-    if (durationInSeconds < 11) $("#info1").innerHTML = `inactivity disconnect in ${durationInSeconds} seconds`;
-    
-    console.log(durationInSeconds);
+    if (durationInSeconds < 11) {
+      $("#info1").innerHTML = `inactivity disconnect in ${durationInSeconds} seconds`;
+      countDown.visible = true;      
+    };    
   };
 
   function stopInterval(intervalVar) {
-    clearInterval(intervalVar);
-    console.log('stopInterval');
+    clearInterval(intervalVar);   
   };
 
-  function resetTimer() {
-    console.log('resetTimer');
+  function resetTimer() {   
     clearTimeout(time);   
     clearInterval(intervalVar);  
-    countDown('reset');
-    
-    if (durationInSeconds < 11) console.log('test');  
-    if (durationInSeconds < 11 && name.hasBeenEntered === true) emptyInfo1();
-    intervalVar = setInterval(() => countDown(), 1000);
+    countDownTimer('reset');     
+    if (countDown.visible === true && userName.hasBeenEntered === false) enterNameMessage();  
+    if (countDown.visible === true && userName.hasBeenEntered === true) $("#info1").innerHTML = playerInfo1.info;
+    countDown.visible = false;
+    intervalVar = setInterval(() => countDownTimer(), 1000);
     time = setTimeout(() => {logout(); stopInterval(intervalVar)}, durationInMilliseconds);    
   };
 };
 
 inactivityTime();
 
+const playerInfo1 = {};
   
 const messageWait = () => $("#info3").innerHTML = "Please wait for your opponent";
 
-const messageStart = () => $("#info3").innerHTML = "Two players connected. ";
+const messageStart = () => $("#info3").innerHTML = "Two players connected.";
 
-const startPlayerInfo = data => $("#info1").innerHTML = `Welcome ${data.name}. You're playing as ${data.startPlayer}.`;
+const startPlayerInfo = data => {  
+  playerInfo1.info = `Welcome ${data.name}. You're playing as ${data.startPlayer}.`;  
+  $("#info1").innerHTML = playerInfo1.info;
+};
 
-const secondPlayerInfo = data =>
-data.startPlayer === 'X' ? $("#info1").innerHTML = `Welcome ${data.name}. You're playing as O`
-: $("#info1").innerHTML = `Welcome ${data.name}. You're playing as X`;
+const secondPlayerInfo = data => {
+  if (data.startPlayer === 'X') {    
+    playerInfo1.info = `Welcome ${data.name}. You're playing as O`;   
+    $("#info1").innerHTML = playerInfo1.info; 
+  };
+
+  if (data.startPlayer === 'O') {    
+    playerInfo1.info = `Welcome ${data.name}. You're playing as X`;   
+    $("#info1").innerHTML = playerInfo1.info; 
+  };
+};
 
 const amZug = startPlayer => $("#info2").innerHTML = `Player ${startPlayer}'s turn`;
 
@@ -169,11 +206,7 @@ const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent h
 
 const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
 
-const enterNameMessage = () => {
-  setTimeout( () => $("#info1").innerHTML = "Please enter your name.", 200);
-  console.log('enter name');
-};
-
+const enterNameMessage = () => userName.hasBeenEntered === false ? setTimeout( () => $("#info1").innerHTML = "Please enter your name.", 200) : undefined;
 
 /* more messenger stuff */
 
@@ -193,32 +226,6 @@ const appendMessage = data => {
     setTimeout( () => emitOnce.done = false, 5);
   };  
   scrollDown();
-};
-
-const name = {
-  hasBeenEntered: false
-};
-
-const createPlayerNameInputField = () => { 
-  const ticTacToeGameField = document.getElementById('gamefield');
-  const inputElement = document.createElement('input');  
-
-  inputElement.type = 'text';
-  inputElement.id = 'player-name-input';
-  inputElement.placeholder = 'Enter your Name';
-  inputElement.autofocus = true;
-  inputElement.required = true;
-  ticTacToeGameField.appendChild(inputElement);   
-
-  inputElement.addEventListener('keyup', e => {
-    if (e.keyCode === 13) {
-      inputElement.classList.add('player-name-input-remove');
-      socket.off('enter-name-message');             
-      socket.emit('new-user', inputElement.value); 
-      name.hasBeenEntered = true;
-      console.log(name);
-    };
-  });   
 };
 
 messageForm.addEventListener('submit', e => {  
@@ -273,10 +280,8 @@ socket.on('disableClient1', () => disableClient1());
 
 socket.on('enableClient1', () => enableClient1());
 
-socket.on('endMessage', message => {
-  console.log(endMessage(message));
-  showStartButton();  
-  console.log(showStartButton()); 
+socket.on('endMessage', message => {  
+  showStartButton();    
   emptyInfo2();
   socket.emit("move");   
 });

@@ -164,27 +164,15 @@ const disableOccupiedField = gameField => {
 
 const writeMessageForMove = messageForMove =>  $("#info3").innerHTML = messageForMove;
 
-const disableClient0 = () => {
+const disableClient = () => {  
   for (let i = 0; i < 9; i++) {
-  document.getElementById(i).disabled = true;
+    document.getElementById(i).disabled = true;
   };
 };
 
-const enableClient0 = () => {
+const enableClient = () => {  
   for (let i = 0; i < 9; i++) {
-  document.getElementById(i).disabled = false;
-  };
-};
-
-const disableClient1 = () => {
-  for (let i = 0; i < 9; i++) {
-  document.getElementById(i).disabled = true;
-  };
-};
-
-const enableClient1 = () => {
-  for (let i = 0; i < 9; i++) {
-  document.getElementById(i).disabled = false;
+    document.getElementById(i).disabled = false;
   };
 };
 
@@ -272,18 +260,18 @@ socket.on('disableOccupiedFields', gameField => disableOccupiedField(gameField))
 
 socket.on("messageForMove", messageForMove => writeMessageForMove(messageForMove));
 
-socket.on('disableClient0', () => disableClient0());
+socket.on('disableClient', () => disableClient());
 
-socket.on('enableClient0', () => enableClient0());
+socket.on('enableClient', () => enableClient());
 
-socket.on('disableClient1', () => disableClient1());
+// socket.on('disableClient1', () => disableClient1());
 
-socket.on('enableClient1', () => enableClient1());
+// socket.on('enableClient1', () => enableClient1());
 
 socket.on('endMessage', message => {  
   showStartButton();    
   emptyInfo2();
-  socket.emit("move");   
+  endMessage(message);     
 });
 
 socket.on('emptyInfo3', () => emptyInfo3());

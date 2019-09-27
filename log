@@ -142,21 +142,119 @@ at the moment - if for example 2 gameRoom and gameRoom 1 has only one player a n
 Solution: on connect I have to check whether there is a gameRoom in the roomsArray which isn't full.
 
 
-for (let i = 0; i < roomsArray.length; i++) {
-
-   if (roomsArray[i].forEach( player => player === undefined)) {
-
-    if (roomsArray[i].player1 && !roomsArray[i].player2) {
-       console.log('conditional 5'); 
-      gameRoom.player2 = socket;             
-      gameRoom.fn();  
-    };
-
-    if (!roomsArray[i].player1 && roomsArray[i].player2) {
-       console.log('conditional 6'); 
-      gameRoom.player1 = socket;             
-      gameRoom.fn();  
-   };
+ for (let i = 0; i < roomsArray.length; i++) {      
+   
+      if (roomsArray[i].player1 && !roomsArray[i].player2) {
+        console.log('conditional 5'); 
+        roomsArray[i].player2 = socket;             
+        roomsArray[i].fn();  
+        return;
+      };
+  
+      if (!roomsArray[i].player1 && roomsArray[i].player2) {
+        console.log('conditional 6'); 
+        roomsArray[i].player1 = socket;             
+        roomsArray[i].fn();  
+        return;
+      };      
 };
 
+the above approach turned out to be sucessfull - so: ---solved
+
+ultimate challenge: if two players are alone in their respective rooms, they should be put together with according messages
+
+on disconnect:
+1. remove empty rooms from roomsArray
+2. loop through roomsArray and find rooms that have only one player
+3. take player from first room and add to second room 
+4. remove empty room
+5. implement some kind of notification on who's playing who
+
+
+1. problem:
+if I have 3 rooms and delete player 1 and player 2 of the second room roomsArray only has one room (the first) when it should have two (the first and the second);
+
+the above mentioned problem was due to the methods implemented to remove elements from an array. after finding the best method --- solved
+
+
+
+2. loop through roomsArray and find rooms that have only one player
+
+const uniteLonelyPlayers = () => {
+
+  const roomIndexArr = [];
+
+  for (let i = 0; i < roomsArray.length; i++) {      
+    
+    if (!roomsArray[i].player1 || !roomsArray[i].player2) {
+      roomIndexArr.push[i];    
+      if (roomIndexArr.length === 2) return;
+    };      
+  };
+
+  if (roomsArray[roomIndexArr[0]].player1) const room1Player1 = roomsArray[roomIndexArr[0]].player1;
+  if (roomsArray[roomIndexArr[0]].player2) const room1Player2 = roomsArray[roomIndexArr[0]].player2;
+  if (roomsArray[roomIndexArr[1]].player1) const room2Player1 = roomsArray[roomIndexArr[1]].player1;
+  if (roomsArray[roomIndexArr[1]].player2) const room2Player2 = roomsArray[roomIndexArr[1]].player2;
+
+
+  if (!room1Player1 && room2Player1) roomsArray[roomIndexArr[0].player1]] = roomsArray[roomIndexArr[1].player1]];
+  if (!room1Player1 && room2Player2) roomsArray[roomIndexArr[0].player1]] = roomsArray[roomIndexArr[1].player2]];
+
+  if (!room1Player2 && room2Player1) roomsArray[roomIndexArr[0].player2]] = roomsArray[roomIndexArr[1].player1]];
+  if (!room1Player2 && room2Player2) roomsArray[roomIndexArr[0].player2]] = roomsArray[roomIndexArr[1].player2]];
+
+  roomsArray = roomsArray.filter(el => el != roomsArray[roomIndexArr[1]);
+
+};
+
+
+it only works if I disable the lines which use filter to remove empty rooms from the roomsArray 
+( roomsArray = roomsArray.filter(el => el != roomsArray[i]); )
+
+and if I close room 2 player 2 and then room 1 player 1 
+
+and if I enter the names after closing the above mentioned browser tab rather then before
+
+
+what if I close room 1 player 1 first, then room 2 player 2? - it doesn't work.
+
+what if I enable roomsArray = roomsArray.filter(el => el != roomsArray[i])? - it works.
+
+
+
+
+whole new prob:
+
+if I open two gameRooms and enter names everywhere - than close tabs according to conditional 1 I get an error if I start a game.
+on move obj.player2 is lost - crazy!!!
+
+
+
+if I open two gameRooms and enter names only in the tabs that don't get closed - no error.
+
+
+solution:
+
+I copy obj.player2 --> obj.player2backup = obj.player2;
+
+
+
+another prob:
+
+after gameover disable buttons doesn't work -- solved
+
+also: the more sockets the more emits - I only need one emit. how can I stop multiple emits from happening?
+
+also: user infos aren't what they should be after uniteLonelyPlayers(); (especially info#1)
+
+also: on entering room notify player of opponents name 
+
+comprehensive notofication of player such as:
+
+
+player name has disconnected
+player name has connected
+
+maybe your alone in the room wait for new opponent. and so forth
 

@@ -125,7 +125,7 @@ const inactivityTime = function () {
   };
 };
 
-inactivityTime();
+// inactivityTime();
 
 const playerInfo1 = {};
   

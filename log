@@ -238,6 +238,9 @@ solution:
 
 I copy obj.player2 --> obj.player2backup = obj.player2;
 
+if uniteLonelyPlayers() fires, for some reason in some sections of my code obj.player1 and/or obj.player2 get lost and the code breaks. Hence the backup. If I use the backup version of the object
+the code doesn't break. 
+
 
 
 another prob:
@@ -258,3 +261,27 @@ player name has connected
 
 maybe your alone in the room wait for new opponent. and so forth
 
+also: your opponent has disconnected isn't replaced by user info after new opponent connects
+
+
+
+
+also:  there are still alot of use cases in which two players can't play
+
+2 gameRooms - 2 player each and 1 gameRoom - only one player - delete both players of second gameRoom and 2nd player of 1st gameRoom so 
+
+player 1 of 1st gameRoom and player 1 of 3rd gameRoom are beeing united - both have start button and the game doesn't work.
+
+---- solved
+
+prob: reload breaks the code
+
+reload should delete socket and put new socket in same position
+
+open tree tabs --> close the middle one --> reload the first one --> get 2 gameRooms with 1 player each when there should be one one gameRoom with two players.
+
+detect reload.
+
+after uniteLonelyPlayers() has fired, on reload it acts as if socket was still occupied. so it creates new room.
+
+why does it think socket is still occupied?

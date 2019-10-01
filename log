@@ -247,25 +247,6 @@ another prob:
 
 after gameover disable buttons doesn't work -- solved
 
-also: the more sockets the more emits - I only need one emit. how can I stop multiple emits from happening?
-
-also: user infos aren't what they should be after uniteLonelyPlayers(); (especially info#1)
-
-also: on entering room notify player of opponents name 
-
-comprehensive notofication of player such as:
-
-
-player name has disconnected
-player name has connected
-
-maybe your alone in the room wait for new opponent. and so forth
-
-also: your opponent has disconnected isn't replaced by user info after new opponent connects
-
-
-
-
 also:  there are still alot of use cases in which two players can't play
 
 2 gameRooms - 2 player each and 1 gameRoom - only one player - delete both players of second gameRoom and 2nd player of 1st gameRoom so 
@@ -285,3 +266,53 @@ detect reload.
 after uniteLonelyPlayers() has fired, on reload it acts as if socket was still occupied. so it creates new room.
 
 why does it think socket is still occupied?
+
+
+
+on reload:
+
+tab is beeing closed
+
+server side: on disconnect --> playerDisconnect() deletes gameRoom[i].player --> calls fnPlayerDisconnect() which deletes obj[obj.player1.id]; and calls deleteEmptyRooms()
+
+server side: on connect --> roomsAndPlayaz() put new socket in its correct place 
+
+
+correction: after uniteLonelyPlayers() has fired, apparently both obj.player1 and obj.player2 are undefined (on reload conditional 1 fires in roomsAndPlayaz());
+
+so presumably something happens in uniteLonelyPlayers();
+
+
+Disconnect roomsArray[0].player1: [object Object] & roomsArray[0].player2: no have
+connect roomsArray[0].player1: [object Object] & roomsArray[0].player2: no have
+connect roomsArray[1].player1: [object Object] & roomsArray[1].player2: no have
+
+
+Disconnect roomsArray[0].player1: [object Object] & roomsArray[0].player2: no have
+connect roomsArray[0].player1: [object Object] & roomsArray[0].player2: [object Object]
+
+
+turns out I had to make sure that conditional 1 in roomsAndPlayaz() is indeed only used if there are no gameRooms at all. Adding a !roomsArray[0] makes sure of that. Now the correct conditional 
+(conditional 2 or conditional 3) is beeing used. so ----- solved
+
+problem: click on buttons doesn't do anything.
+
+reason: firefox doesn't know path property of the click event object - solution: use e.composedPath() instead of e.path --- solved
+
+
+
+also: the more sockets the more emits - I only need one emit. how can I stop multiple emits from happening?
+
+also: user infos aren't what they should be after uniteLonelyPlayers(); (especially info#1)
+
+also: on entering room notify player of opponents name 
+
+comprehensive notofication of player such as:
+
+
+player name has disconnected
+player name has connected
+
+maybe your alone in the room wait for new opponent. and so forth
+
+also: your opponent has disconnected isn't replaced by user info after new opponent connects

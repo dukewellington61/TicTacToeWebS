@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 
 const winCombos = [
   [0, 1, 2],

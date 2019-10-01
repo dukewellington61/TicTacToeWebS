@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 
 const socket = io.connect();
 
@@ -72,7 +72,7 @@ const createPlayerNameInputField = () => {
 };
 
 const inactivityTime = function () {
-  let startDuration = 120000
+  let startDuration = 60000;
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;
@@ -125,7 +125,7 @@ const inactivityTime = function () {
   };
 };
 
-// inactivityTime();
+inactivityTime();
 
 const playerInfo1 = {};
   
@@ -217,6 +217,7 @@ const appendMessage = data => {
 };
 
 messageForm.addEventListener('submit', e => {  
+  let data;
   e.preventDefault();
   const message = messageInput.value;         
   socket.emit('send-chat-message', data = {message: message, id: socket.id});
@@ -293,11 +294,15 @@ socket.on('user-connected', name => broadCastNewUsersName(name));
 /* end of even more messenger stuff */
 
 
-$("#TikTakToe").addEventListener("click", (e) => {
-  if (e.path[0].id === "start-button") socket.emit("newGame");
+
+$("#TikTakToe").addEventListener("click", e => {    
+
+  // let path = e.path || (e.composedPath && e.composedPath());
+
+  if (e.composedPath()[0].id === "start-button") socket.emit("newGame");
     else {
-      if (e.path[0].id === "info1" || e.path[0].id === "info2" || e.path[0].id === "info3") "";
-      else socket.emit("move", e.path[0].id);
+      if (e.composedPath()[0].id === "info1" || e.composedPath()[0].id === "info2" || e.composedPath()[0].id === "info3") "";
+      else socket.emit("move", e.composedPath()[0].id);
     };
 });
 

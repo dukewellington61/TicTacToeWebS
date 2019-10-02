@@ -184,13 +184,17 @@ const emptyInfo2 = () => $("#info2").innerHTML = "";
 
 const emptyInfo3 = () => $("#info3").innerHTML = "";
 
+const emptyInfo4 = () => $("#info4").innerHTML = "";
+
 const logoutInfo = () => $("#info1").innerHTML = "Timeout. You're disconnected";
 
 const hideStartButton = () => $('#start-button').setAttribute('hidden', 'true');
 
 const showStartButton = () => $('#start-button').removeAttribute('hidden');
 
-const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent has disconnected.";
+// const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent has disconnected.";
+
+const messagePlayerDisconnected = name => $("#info1").innerHTML = `${name} has disconnected.`;
 
 const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
 
@@ -226,7 +230,7 @@ messageForm.addEventListener('submit', e => {
 
 const broadCastNewUsersName = name => {
   const usersNameElement = document.getElementById('info4');  
-  usersNameElement.innerText = `Your playing against ${name}`;
+  usersNameElement.innerText = `You're playing against ${name}`;
 };
 
 const scrollDown = () => {
@@ -265,10 +269,6 @@ socket.on('disableClient', () => disableClient());
 
 socket.on('enableClient', () => enableClient());
 
-// socket.on('disableClient1', () => disableClient1());
-
-// socket.on('enableClient1', () => enableClient1());
-
 socket.on('endMessage', message => {  
   showStartButton();    
   emptyInfo2();
@@ -279,7 +279,11 @@ socket.on('emptyInfo3', () => emptyInfo3());
 
 socket.on('emptyInfo2', () => emptyInfo2());
 
-socket.on('messagePlayerDisconnected', () => messagePlayerDisconnected());
+socket.on('messagePlayerDisconnected', name => {
+  messagePlayerDisconnected(name);
+  emptyInfo4();
+  // socket.off('user-connected');
+});
 
 socket.on('game-has-started', () => messageGameStarted());
 
@@ -290,14 +294,14 @@ socket.on('enter-name-message', () => enterNameMessage());
 
 /* even more messenger stuff */
 socket.on('chat-message', data => appendMessage(data));
-socket.on('user-connected', name => broadCastNewUsersName(name));
+socket.on('user-connected', name => {
+  broadCastNewUsersName(name);   
+});
 /* end of even more messenger stuff */
 
 
 
-$("#TikTakToe").addEventListener("click", e => {    
-
-  // let path = e.path || (e.composedPath && e.composedPath());
+$("#TikTakToe").addEventListener("click", e => {      
 
   if (e.composedPath()[0].id === "start-button") socket.emit("newGame");
     else {

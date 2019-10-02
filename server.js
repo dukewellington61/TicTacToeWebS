@@ -114,7 +114,7 @@ function createRoom(socket) {
             // console.log(`2. obj.player1: ${obj.player1} & obj.player2: ${obj.player2} & obj.player2backup: ${obj.player2backup}`);
             // console.log(`2. userArray[0]: ${obj.userArray()[0]} & userArray[1]: ${obj.userArray()[1]}`);
             
-            obj.player1.emit('disableClient');              
+            obj.player1backup.emit('disableClient');              
             obj.player2backup.emit('enableClient');        
     
             obj.userArray().forEach( player => player.emit("Am Zug: ...", secondPlayer));        
@@ -165,19 +165,24 @@ function createRoom(socket) {
 
       console.log('fnPlayerDisconnect')
       
-      if (obj.player1 && id === obj.player1.id) {
-        delete obj[obj.player1.id];        
-      };
+      // if (obj.player1 && id === obj.player1.id) {
+      //   // delete obj[obj.player1.id];        
+      // };
 
-      if (obj.player2 && id === obj.player2.id) {
-        delete obj[obj.player2.id];       
-      };
+      // if (obj.player2 && id === obj.player2.id) {
+      //   // delete obj[obj.player2.id];       
+      // };
 
       // console.log(`obj.player1: ${obj.player1} & obj.player2: ${obj.player2}`)
+
+      // obj.player1backup = obj.player1;
+      // obj.player2backup = obj.player2;
               
       gameModule.Game().gameField = ["","","","","","","","",""];
       obj.userArray().forEach( player => player.emit('gameField', gameModule.Game().gameField)); 
-      obj.userArray().forEach( player => player.emit('messagePlayerDisconnected'));
+      if (obj.player1) obj.player1.emit('messagePlayerDisconnected', obj[obj.player2backup.id]);
+      if (obj.player2) obj.player2.emit('messagePlayerDisconnected', obj[obj.player1backup.id]);
+      // obj.userArray().forEach( player => player.emit('messagePlayerDisconnected'));
       obj.userArray().forEach( player => player.emit("messageWait"));
       obj.userArray().forEach( player => player.emit('emptyInfo2'));
       obj.userArray().forEach( player => player.emit('hide-start-button'));      
@@ -310,7 +315,9 @@ io.on("connection", socket => {
         roomsArray[roomIndexArr[0]].player1 = roomsArray[roomIndexArr[1]].player1;
         roomsArray[roomIndexArr[0]][roomsArray[roomIndexArr[0]].player1.id] = roomsArray[roomIndexArr[1]][roomsArray[roomIndexArr[1]].player1.id];        
         roomsArray[roomIndexArr[0]].fn(); 
-        delete roomsArray[roomIndexArr[1]].player1;        
+        delete roomsArray[roomIndexArr[1]].player1;      
+        roomsArray[roomIndexArr[0]].player2.emit('user-connected', roomsArray[roomIndexArr[0]][roomsArray[roomIndexArr[0]].player1.id]);
+        console.log('conditional 1');
       };
 
       if (!room1Player1 && room2Player2) {        
@@ -324,9 +331,7 @@ io.on("connection", socket => {
         roomsArray[roomIndexArr[0]].player2 = roomsArray[roomIndexArr[1]].player1;
         roomsArray[roomIndexArr[0]][roomsArray[roomIndexArr[0]].player2.id] = roomsArray[roomIndexArr[1]][roomsArray[roomIndexArr[1]].player1.id];
         roomsArray[roomIndexArr[0]].fn();
-        delete roomsArray[roomIndexArr[1]].player1;       
-        console.log('player 1: ' + roomsArray[roomIndexArr[0]].player1);
-        console.log('player 2: ' + roomsArray[roomIndexArr[0]].player2);
+        delete roomsArray[roomIndexArr[1]].player1;           
       };
 
       if (!room1Player2 && room2Player2) {        

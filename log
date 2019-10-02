@@ -301,18 +301,42 @@ reason: firefox doesn't know path property of the click event object - solution:
 
 
 
-also: the more sockets the more emits - I only need one emit. how can I stop multiple emits from happening?
+notifications:
 
-also: user infos aren't what they should be after uniteLonelyPlayers(); (especially info#1)
-
-also: on entering room notify player of opponents name 
-
-comprehensive notofication of player such as:
+if player disconnects info to other player: "Name has disconnected" on #Info1 and clear #Info3  ---- solved
 
 
-player name has disconnected
-player name has connected
 
-maybe your alone in the room wait for new opponent. and so forth
 
-also: your opponent has disconnected isn't replaced by user info after new opponent connects
+
+on uniteLonelyPlayers() 
+
+player that is already in the room gets notification on #info1: 'name has disconnected' and then after maybe 1 second 'name has connected'
+
+on uniteLonelyPlayers() message to player 
+
+player that is beeing transfered to above mentioned room gets notification on #info1: 'name has disconnected' and then after maybe 1 second 'name has connected' 
+
+--- solved
+
+
+
+on idle socket disconnect: 
+
+/home/theironduke/webdev/JS_Kurs/Teil_4/TicTacToeWebS/server.js:117
+            obj.player1.emit('disableClient');              
+                        ^
+
+TypeError: Cannot read property 'emit' of undefined
+
+obj.player1 has been replaced with obj.player1backup - let's see if exception reoccurs
+
+
+
+if player1 connects and enters name and player2 connects and enters name player2 info4 doesn't display Your playing against name 
+only if player1 connects and player 2 connects and then both enter name player2 info4 displays Your playing against name 
+
+if two players in the room with name and tab two is closed and new tab opened ---> new tab doesn't display Your playing against name
+
+
+

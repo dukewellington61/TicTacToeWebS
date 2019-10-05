@@ -89,7 +89,8 @@ const inactivityTime = function () {
     document.getElementById('player-name-input').classList.add('player-name-input-remove');
     emptyInfo1();
     emptyInfo2();
-    emptyInfo3();    
+    emptyInfo3();  
+    emptyInfo4();   
     logoutInfo();
     socket.off('messageWait');
     socket.off('messagePlayerDisconnected');
@@ -129,7 +130,7 @@ inactivityTime();
 
 const playerInfo1 = {};
   
-const messageWait = () => $("#info3").innerHTML = "Please wait for your opponent";
+const messageWait = () => $("#info3").innerHTML = "Please wait for an opponent";
 
 const messageStart = () => $("#info3").innerHTML = "Two players connected.";
 
@@ -150,7 +151,7 @@ const secondPlayerInfo = data => {
   };
 };
 
-const amZug = startPlayer => $("#info2").innerHTML = `Player ${startPlayer}'s turn`;
+const toMove = moveMessage => $("#info2").innerHTML = moveMessage;
 
 const writeSymbolInGamefield = (symbol,field) => document.getElementById(field).textContent = symbol;  
 
@@ -194,11 +195,13 @@ const showStartButton = () => $('#start-button').removeAttribute('hidden');
 
 // const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent has disconnected.";
 
-const messagePlayerDisconnected = name => $("#info1").innerHTML = `${name} has disconnected.`;
+const messagePlayerDisconnected = name => name ? $("#info1").innerHTML = `${name} has disconnected.` : 'Your opponent has disconnectd';
 
 const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
 
 const enterNameMessage = () => userName.hasBeenEntered === false ? setTimeout( () => $("#info1").innerHTML = "Please enter your name.", 200) : undefined;
+
+const updateInfo1 = () => $("#info1").innerHTML = playerInfo1.info; 
 
 /* more messenger stuff */
 
@@ -257,7 +260,7 @@ socket.on('startPlayer', data => startPlayerInfo(data));
 
 socket.on('secondPlayer', startPlayer => secondPlayerInfo(startPlayer));
 
-socket.on('Am Zug: ...', startPlayer => amZug(startPlayer));
+socket.on('to-move', data => toMove(data.moveMessage));
 
 socket.on('gameField', gameField => gameField.forEach((symbol,field) => writeSymbolInGamefield(symbol,field)));
 
@@ -269,10 +272,9 @@ socket.on('disableClient', () => disableClient());
 
 socket.on('enableClient', () => enableClient());
 
-socket.on('endMessage', message => {  
-  showStartButton();    
+socket.on('endMessage', message => {     
   emptyInfo2();
-  endMessage(message);     
+  endMessage(message.winMessage);     
 });
 
 socket.on('emptyInfo3', () => emptyInfo3());
@@ -281,21 +283,19 @@ socket.on('emptyInfo2', () => emptyInfo2());
 
 socket.on('messagePlayerDisconnected', name => {
   messagePlayerDisconnected(name);
-  emptyInfo4();
-  // socket.off('user-connected');
+  emptyInfo4(); 
 });
 
-socket.on('game-has-started', () => messageGameStarted());
+socket.on('game-has-started', () => {messageGameStarted(); updateInfo1()});
 
 socket.on('enter-name-message', () => enterNameMessage());
-
 
 
 
 /* even more messenger stuff */
 socket.on('chat-message', data => appendMessage(data));
 socket.on('user-connected', name => {
-  broadCastNewUsersName(name);   
+  if (name) broadCastNewUsersName(name);   
 });
 /* end of even more messenger stuff */
 

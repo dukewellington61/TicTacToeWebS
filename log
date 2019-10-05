@@ -338,5 +338,38 @@ only if player1 connects and player 2 connects and then both enter name player2 
 
 if two players in the room with name and tab two is closed and new tab opened ---> new tab doesn't display Your playing against name
 
+I think at the moment info4 displays Your playing against name only on user-connected. this has to be adapted to my needs
+
+that was because on enter player1 player2 emits his name only if player2 exists. if the first of the two above mentioned use cases occurs, nothing is emited 
+because player 2 doesn't exist yet. on player two connects and enter name only player 1 emits.
+So I added if (obj.player2) obj.player2.emit('user-connected', obj[obj.player1.id]);  which has solved the problem
 
 
+
+
+
+if two tabs without enter name yet, player 1 enters name info4 says 'you're playing against null' because player2 hasn't entered name yet. and presumably 
+the other way around.
+
+I guess I need a conditional which prevents emit in such a case. Something like: if player.name && blah blah... emit ---- solved
+
+
+
+after idle socket disconnect player1 info4 still says 'you're playing against blah...' 
+
+
+uniteLonelyPlayers() still hasn't been completed.  ----- done
+
+after idle socket timeout player one still has start game button ---- solved
+
+
+
+
+after uniteLonelyPlayers() player 2 (or player 1?) info 1 still displays 'name has disconnected' -- on start game it should be 'Welcome name. You're playing against name.
+possible solution: const playerInfo1 = {}; ---- solved
+
+on game won player2 also has start game button ----- solved
+
+personalize win message: instead of 'Game Over: Player X has won!' --> 'Game Over: name has won!' --- solved
+
+if both players seize to play in the middle of a game and socket disconnects on idleness gamefield isn't cleared and start button is still visible

@@ -46,8 +46,8 @@ function createRoom(socket) {
                               
             obj[obj.player1backup.id] = name;  
             obj.fn(); 
-            if (obj.player1) obj.player1.emit('startPlayer', {startPlayer: startPlayer, name: obj[obj.player1.id]});   
-            if (obj.player2) obj.player2.emit('secondPlayer', {startPlayer: startPlayer, name: obj[obj.player2.id]});
+            if (obj.player1) obj.player1.emit('start-player', {startPlayer: startPlayer, name: obj[obj.player1.id]});   
+            if (obj.player2) obj.player2.emit('secon-player', {startPlayer: startPlayer, name: obj[obj.player2.id]});
             if (obj.player1 && obj.player2) obj.player1.emit('user-connected', obj[obj.player2.id]);
             if (obj.player2) obj.player2.emit('user-connected', obj[obj.player1.id]);          
         });
@@ -61,8 +61,8 @@ function createRoom(socket) {
                    
             obj[obj.player2backup.id] = name;  
             obj.fn();    
-            if (obj.player1) obj.player1.emit('startPlayer', {startPlayer: startPlayer, name: obj[obj.player1.id]});   
-            if (obj.player2) obj.player2.emit('secondPlayer', {startPlayer: startPlayer, name: obj[obj.player2.id]});
+            if (obj.player1) obj.player1.emit('start-player', {startPlayer: startPlayer, name: obj[obj.player1.id]});   
+            if (obj.player2) obj.player2.emit('second-player', {startPlayer: startPlayer, name: obj[obj.player2.id]});
             if (obj.player1) obj.player1.emit('user-connected', obj[obj.player2.id]);
             if (obj.player2) obj.player2.emit('user-connected', obj[obj.player1.id]);      
         });
@@ -77,18 +77,18 @@ function createRoom(socket) {
       else {           
     
         if (!obj.player1 || !obj.player2) {
-          obj.userArray().forEach( player => player.emit("messageWait"));           
+          obj.userArray().forEach( player => player.emit("message-wait"));           
           return;
         };
 
-        obj.userArray().forEach( player => player.emit("messageStart"));
+        obj.userArray().forEach( player => player.emit("message-start"));
     
         if (obj.player1 != undefined && obj.player2 != undefined) {
-          obj.userArray().forEach( player => player.on('newGame', () => {
-            obj.player1backup.emit('enableClient');
+          obj.userArray().forEach( player => player.on('new-game', () => {
+            obj.player1backup.emit('enable-client');
             newGame.gameField = ["","","","","","","","",""];
-            obj.userArray().forEach( player => player.emit('gameField', newGame.gameField));  
-            obj.userArray().forEach( player => player.emit("messageStart"));            
+            obj.userArray().forEach( player => player.emit('game-field', newGame.gameField));  
+            obj.userArray().forEach( player => player.emit("message-start"));            
             obj.player1.emit('to-move', {moveMessage: `Your turn, ${obj[obj.player1.id]}`});
             obj.player2.emit('to-move', {moveMessage: `${obj[obj.player1.id]}'s turn`});
             obj.player1backup.emit('hide-start-button');         
@@ -100,17 +100,17 @@ function createRoom(socket) {
           
           obj.player1.emit('show-start-button');
         
-          obj.userArray().forEach( player => player.emit('disableClient'));      
+          obj.userArray().forEach( player => player.emit('disable-client'));      
           
           obj.player2backup = obj.player2;
                       
           obj.player1.on('move', (field) => {          
             const message = newGame.move(startPlayer, field);        
-            obj.userArray().forEach( player => player.emit('gameField', newGame.gameField));   
-            obj.userArray().forEach( player => player.emit('emptyInfo3'));            
+            obj.userArray().forEach( player => player.emit('game-field', newGame.gameField));   
+            obj.userArray().forEach( player => player.emit('empty-info3'));            
             
-            obj.player1backup.emit('disableClient');              
-            obj.player2backup.emit('enableClient');        
+            obj.player1backup.emit('disable-client');              
+            obj.player2backup.emit('enable-client');        
     
             obj.player2.emit('to-move', {moveMessage: `Your turn, ${obj[obj.player2.id]}`});
             obj.player1.emit('to-move', {moveMessage: `${obj[obj.player2.id]}'s turn`});     
@@ -118,33 +118,33 @@ function createRoom(socket) {
             if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
               
               if (startPlayer === 'X' && message === 'Game Over: Player X has won!') {
-                obj.player1.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player2.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player1.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player2.emit('end-message', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
               };
 
               if (startPlayer === 'O' && message === 'Game Over: Player O has won!') {
-                obj.player1.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player2.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player1.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player2.emit('end-message', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
               };
 
               if (secondPlayer === 'X' && message === 'Game Over: Player X has won!') {
-                obj.player2.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player1.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player2.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player1.emit('end-message', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
               };
 
               if (secondPlayer === 'O' && message === 'Game Over: Player O has won!') {
-                obj.player2.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player1.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player2.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player1.emit('end-message', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
               };
 
-              if (message === "It's a draw.") obj.userArray().forEach( player => player.emit('endMessage', {winMessage: "It's a draw."}));              
+              if (message === "It's a draw.") obj.userArray().forEach( player => player.emit('end-message', {winMessage: "It's a draw."}));              
 
-              obj.userArray().forEach( player => player.emit('disableClient'));  
+              obj.userArray().forEach( player => player.emit('disable-client'));  
 
               obj.player1.emit('show-start-button');
 
             };
-            obj.userArray().forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
+            obj.userArray().forEach( player => player.emit('disable-occupied-fields', newGame.gameField));          
           });
 
           obj.player1backup = obj.player1;
@@ -152,11 +152,11 @@ function createRoom(socket) {
     
           obj.player2.on('move', (field) => {          
             const message = newGame.move(secondPlayer, field);        
-            obj.userArray().forEach( player => player.emit('gameField', newGame.gameField));              
-            obj.userArray().forEach( player => player.emit('emptyInfo3'));          
+            obj.userArray().forEach( player => player.emit('game-field', newGame.gameField));              
+            obj.userArray().forEach( player => player.emit('empty-info3'));          
             
-            obj.player2backup.emit('disableClient');
-            obj.player1backup.emit('enableClient');   
+            obj.player2backup.emit('disable-client');
+            obj.player1backup.emit('enable-client');   
 
             obj.player1.emit('to-move', {moveMessage: `Your turn, ${obj[obj.player1.id]}`});
             obj.player2.emit('to-move', {moveMessage: `${obj[obj.player1.id]}'s turn`});     
@@ -164,32 +164,32 @@ function createRoom(socket) {
             if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
               
               if (startPlayer === 'X' && message === 'Game Over: Player X has won!') {
-                obj.player1.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player2.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player1.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player2.emit('end-message', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
               };
 
               if (startPlayer === 'O' && message === 'Game Over: Player O has won!') {
-                obj.player1.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player2.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player1.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player2.emit('end-message', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
               };
 
               if (secondPlayer === 'X' && message === 'Game Over: Player X has won!') {
-                obj.player2.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player1.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player2.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player1.emit('end-message', {winMessage: `You've lost. ${obj[obj.player2.id]} is the winner.`});
               };
 
               if (secondPlayer === 'O' && message === 'Game Over: Player O has won!') {
-                obj.player2.emit('endMessage', {winMessage: `Congratulations! You've won!`});
-                obj.player1.emit('endMessage', {winMessage: `You've lost. ${obj[obj.player1.id]} is the winner.`});
+                obj.player2.emit('end-message', {winMessage: `Congratulations! You've won!`});
+                obj.player1.emit('end-message', {winMessage: `You've lost. ${obj[obj.player2.id]} is the winner.`});
               };
 
-              if (message === "It's a draw.") obj.userArray().forEach( player => player.emit('endMessage', {winMessage: "It's a draw."}));   
+              if (message === "It's a draw.") obj.userArray().forEach( player => player.emit('end-message', {winMessage: "It's a draw."}));   
              
 
-              obj.userArray().forEach( player => player.emit('disableClient'));  
+              obj.userArray().forEach( player => player.emit('disable-client'));  
 
             };        
-            obj.userArray().forEach( player => player.emit('disableOccupiedFields', newGame.gameField));          
+            obj.userArray().forEach( player => player.emit('disable-occupied-fields', newGame.gameField));          
           });
         };        
       
@@ -200,11 +200,11 @@ function createRoom(socket) {
     fnPlayerDisconnect: id => {        
               
       gameModule.Game().gameField = ["","","","","","","","",""];
-      obj.userArray().forEach( player => player.emit('gameField', gameModule.Game().gameField)); 
-      if (obj.player1 && obj.player2) obj.player1.emit('messagePlayerDisconnected', obj[obj.player2backup.id]);
-      if (obj.player2) obj.player2.emit('messagePlayerDisconnected', obj[obj.player1backup.id]);     
-      obj.userArray().forEach( player => player.emit("messageWait"));
-      obj.userArray().forEach( player => player.emit('emptyInfo2'));
+      obj.userArray().forEach( player => player.emit('game-field', gameModule.Game().gameField)); 
+      if (obj.player1 && obj.player2) obj.player1.emit('message-player-disconnected', obj[obj.player2backup.id]);
+      if (obj.player2) obj.player2.emit('message-player-disconnected', obj[obj.player1backup.id]);     
+      obj.userArray().forEach( player => player.emit("message-wait"));
+      obj.userArray().forEach( player => player.emit('empty-info2'));
       obj.userArray().forEach( player => player.emit('hide-start-button'));      
       if (!obj.player1 && !obj.player2) obj.userArray() = [];        
       
@@ -271,8 +271,7 @@ io.on("connection", socket => {
         roomsArray[i].fnPlayerDisconnect(id);
         roomsArray[i].userArray(); 
 
-        delete roomsArray[i].player1;  
-        // console.log(roomsArray[i].player1);
+        delete roomsArray[i].player1;          
          
         uniteLonelyPlayers();
         deleteEmptyRooms();   
@@ -282,8 +281,7 @@ io.on("connection", socket => {
         roomsArray[i].fnPlayerDisconnect(id);
         roomsArray[i].userArray();   
 
-        delete roomsArray[i].player2;   
-        // console.log(roomsArray[i].player2);
+        delete roomsArray[i].player2;        
            
         uniteLonelyPlayers();
         deleteEmptyRooms();    

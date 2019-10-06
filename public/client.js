@@ -29,7 +29,7 @@ const viewTikTakToe = () => {
         <button class='button' id='1'></button>
         <button class='button' id='2'></button>
         <br>
-
+      
         <button class='button' id='3'></button>
         <button class='button' id='4'></button>
         <button class='button' id='5'></button>
@@ -62,6 +62,23 @@ const createPlayerNameInputField = () => {
   inputElement.required = true;
   ticTacToeGameField.appendChild(inputElement);   
 
+  let buttonElement = document.getElementById('3');
+  let buttonElementRect = buttonElement.getBoundingClientRect();  
+
+  inputElement.style.position = "absolute";
+  
+
+  window.screen.width > 799 ? inputElement.style.top = `${buttonElement.offsetTop + 19}px` : inputElement.style.top = `${buttonElement.offsetTop}px`;
+
+  inputElement.style.height = `${buttonElementRect.height}px`;
+
+  inputElement.style.width = `${buttonElementRect.width * 3}px`;
+
+  console.log('inputElement.style.top: ' +  inputElement.style.top);
+  console.log('buttonElement.offsetTop: ' + buttonElement.offsetTop);
+
+
+
   inputElement.addEventListener('keyup', e => {
     if (e.keyCode === 13) {
       userName.hasBeenEntered = true;     
@@ -92,8 +109,8 @@ const inactivityTime = function () {
     emptyInfo3();  
     emptyInfo4();   
     logoutInfo();
-    socket.off('messageWait');
-    socket.off('messagePlayerDisconnected');
+    socket.off('message-wait');
+    socket.off('message-player-disconnected');
     socket.emit('idle-socket-disconnect', socket.id);   
     document.onclick = undefined;
     document.onkeypress = undefined;       
@@ -163,8 +180,6 @@ const disableOccupiedField = gameField => {
   };
 };
 
-const writeMessageForMove = messageForMove =>  $("#info3").innerHTML = messageForMove;
-
 const disableClient = () => {  
   for (let i = 0; i < 9; i++) {
     document.getElementById(i).disabled = true;
@@ -192,8 +207,6 @@ const logoutInfo = () => $("#info1").innerHTML = "Timeout. You're disconnected";
 const hideStartButton = () => $('#start-button').setAttribute('hidden', 'true');
 
 const showStartButton = () => $('#start-button').removeAttribute('hidden');
-
-// const messagePlayerDisconnected = () => $("#info1").innerHTML = "Your opponent has disconnected.";
 
 const messagePlayerDisconnected = name => name ? $("#info1").innerHTML = `${name} has disconnected.` : 'Your opponent has disconnectd';
 
@@ -223,11 +236,10 @@ const appendMessage = data => {
   scrollDown();
 };
 
-messageForm.addEventListener('submit', e => {  
-  let data;
+messageForm.addEventListener('submit', e => {    
   e.preventDefault();
-  const message = messageInput.value;         
-  socket.emit('send-chat-message', data = {message: message, id: socket.id});
+  const message = messageInput.value;  
+  socket.emit('send-chat-message', {message: message, id: socket.id});
   messageInput.value = " ";  
 });
 
@@ -252,36 +264,34 @@ socket.on('hide-start-button', () => hideStartButton());
 
 socket.on('show-start-button', () => showStartButton());
 
-socket.on('messageWait', () => messageWait());
+socket.on('message-wait', () => messageWait());
 
-socket.on('messageStart', () => messageStart());
+socket.on('message-start', () => messageStart());
 
-socket.on('startPlayer', data => startPlayerInfo(data));
+socket.on('start-player', data => startPlayerInfo(data));
 
-socket.on('secondPlayer', startPlayer => secondPlayerInfo(startPlayer));
+socket.on('second-player', startPlayer => secondPlayerInfo(startPlayer));
 
 socket.on('to-move', data => toMove(data.moveMessage));
 
-socket.on('gameField', gameField => gameField.forEach((symbol,field) => writeSymbolInGamefield(symbol,field)));
+socket.on('game-field', gameField => gameField.forEach((symbol,field) => writeSymbolInGamefield(symbol,field)));
 
-socket.on('disableOccupiedFields', gameField => disableOccupiedField(gameField));
+socket.on('disable-occupied-fields', gameField => disableOccupiedField(gameField));
 
-socket.on("messageForMove", messageForMove => writeMessageForMove(messageForMove));
+socket.on('disable-client', () => disableClient());
 
-socket.on('disableClient', () => disableClient());
+socket.on('enable-client', () => enableClient());
 
-socket.on('enableClient', () => enableClient());
-
-socket.on('endMessage', message => {     
+socket.on('end-message', message => {     
   emptyInfo2();
   endMessage(message.winMessage);     
 });
 
-socket.on('emptyInfo3', () => emptyInfo3());
+socket.on('empty-info3', () => emptyInfo3());
 
-socket.on('emptyInfo2', () => emptyInfo2());
+socket.on('empty-info2', () => emptyInfo2());
 
-socket.on('messagePlayerDisconnected', name => {
+socket.on('message-player-disconnected', name => {
   messagePlayerDisconnected(name);
   emptyInfo4(); 
 });
@@ -303,7 +313,7 @@ socket.on('user-connected', name => {
 
 $("#TikTakToe").addEventListener("click", e => {      
 
-  if (e.composedPath()[0].id === "start-button") socket.emit("newGame");
+  if (e.composedPath()[0].id === "start-button") socket.emit("new-game");
     else {
       if (e.composedPath()[0].id === "info1" || e.composedPath()[0].id === "info2" || e.composedPath()[0].id === "info3") "";
       else socket.emit("move", e.composedPath()[0].id);

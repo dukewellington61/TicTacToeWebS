@@ -372,4 +372,18 @@ on game won player2 also has start game button ----- solved
 
 personalize win message: instead of 'Game Over: Player X has won!' --> 'Game Over: name has won!' --- solved
 
-if both players seize to play in the middle of a game and socket disconnects on idleness gamefield isn't cleared and start button is still visible
+
+write documentation:
+
+how double emit is beeing avoided (mostly)
+
+how object instances are beeing employed 
+
+and so forth
+
+
+styling:
+
+position enter-name-field in the middle of gamefield using js --- solved
+
+below gamefield button send message to name 

@@ -38,6 +38,7 @@ body {
   width: 1.75em;
   vertical-align: bottom;
   font-size: 3em;
+  padding: 0; 
 }
 
 @media only screen and (min-width: 598px) {
@@ -83,12 +84,13 @@ p {
   }
 }
 
-/* chat area */
 #player-name-input {  
-  position: absolute;
-  top: 50%;
-  height: 2em;
-  width: 5.25em;
+  background: black;
+  opacity: 0.5;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: white;
 }
 
 .player-name-input-remove {
@@ -98,6 +100,9 @@ p {
 .welcome-field-display-none {
   display: none;
 }
+
+
+/* chat area */
 
 #chat-area {
   display: flex;

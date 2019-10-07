@@ -8,7 +8,9 @@ const $$ = document.querySelectorAll.bind(document);
 /* messenger stuff */
 const messageForm = document.getElementById('send-container');
 const messageInput = document.getElementById('message-input');
-const messageContainer = document.getElementById('message-container');
+const messageContainer = document.getElementById('message-window');
+const messageInputElement = document.getElementById('message-input');
+const inputElement = document.createElement('input');  
 /* end of messenger stuff */
 
 
@@ -54,7 +56,7 @@ const userName = {
 
 const createPlayerNameInputField = () => { 
   const ticTacToeGameField = document.getElementById('gamefield');
-  const inputElement = document.createElement('input');  
+  
   inputElement.type = 'text';
   inputElement.id = 'player-name-input';
   inputElement.placeholder = 'Enter your Name';
@@ -62,22 +64,7 @@ const createPlayerNameInputField = () => {
   inputElement.required = true;
   ticTacToeGameField.appendChild(inputElement);   
 
-  let buttonElement = document.getElementById('3');
-  let buttonElementRect = buttonElement.getBoundingClientRect();  
-
-  inputElement.style.position = "absolute";
-  
-
-  window.screen.width > 799 ? inputElement.style.top = `${buttonElement.offsetTop + 19}px` : inputElement.style.top = `${buttonElement.offsetTop}px`;
-
-  inputElement.style.height = `${buttonElementRect.height}px`;
-
-  inputElement.style.width = `${buttonElementRect.width * 3}px`;
-
-  console.log('inputElement.style.top: ' +  inputElement.style.top);
-  console.log('buttonElement.offsetTop: ' + buttonElement.offsetTop);
-
-
+  positionNameInputElement(inputElement);
 
   inputElement.addEventListener('keyup', e => {
     if (e.keyCode === 13) {
@@ -87,6 +74,34 @@ const createPlayerNameInputField = () => {
     };
   });   
 };
+
+const positionNameInputElement = inputElement => {
+  let buttonElement = document.getElementById('3');
+  let buttonElementRect = buttonElement.getBoundingClientRect();  
+
+  inputElement.style.position = "absolute";
+
+  window.screen.width > 799 ? inputElement.style.top = `${buttonElement.offsetTop + 19}px` : inputElement.style.top = `${buttonElement.offsetTop}px`;
+
+  inputElement.style.height = `${buttonElementRect.height}px`;
+
+  inputElement.style.width = `${buttonElementRect.width * 3}px`;
+
+  widthChatElements(inputElement.style.width);  
+};
+
+const widthChatElements = width => {
+  let messageContainerElement = document.getElementById('message-window');
+  // let messageInputElement = document.getElementById('message-input');
+
+  messageContainerElement.style.width = width;
+  messageInputElement.style.width = width;
+};
+
+
+window.addEventListener("resize", () => positionNameInputElement(inputElement));
+
+
 
 const inactivityTime = function () {
   let startDuration = 60000;
@@ -236,12 +251,14 @@ const appendMessage = data => {
   scrollDown();
 };
 
-messageForm.addEventListener('submit', e => {    
-  e.preventDefault();
-  const message = messageInput.value;  
-  socket.emit('send-chat-message', {message: message, id: socket.id});
-  messageInput.value = " ";  
-});
+messageInputElement.addEventListener('keyup', e => {
+  if (e.keyCode === 13 && userName.hasBeenEntered === true) {
+    e.preventDefault();
+    const message = messageInput.value;  
+    socket.emit('send-chat-message', {message: message, id: socket.id});
+    messageInput.value = " ";      
+  };
+});   
 
 const broadCastNewUsersName = name => {
   const usersNameElement = document.getElementById('info4');  
@@ -249,7 +266,7 @@ const broadCastNewUsersName = name => {
 };
 
 const scrollDown = () => {
-  const objDiv = document.getElementById("message-container");
+  const objDiv = document.getElementById("message-window");
   objDiv.scrollTop = objDiv.scrollHeight;
 };
 

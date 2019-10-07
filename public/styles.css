@@ -9,6 +9,7 @@
 
 body {
   display: flex;
+  flex-direction: column;
   background-color: rgba(0,0,0,0);
 }
 
@@ -109,11 +110,18 @@ p {
   flex-direction: column;
 }
 
-#message-container {
+#message-window {
   overflow-y: auto;
   height: 10em;
   width: 15em;
   border-style: solid;
   border-width: 2px;
   border-color: red;
+  margin: 0 auto;
+  margin-top: 1em;
+}
+
+#message-input {
+  margin: 0 auto;
+  margin-top: 1em;
 }

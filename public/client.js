@@ -10,7 +10,8 @@ const messageForm = document.getElementById('send-container');
 const messageInput = document.getElementById('message-input');
 const messageContainer = document.getElementById('message-window');
 const messageInputElement = document.getElementById('message-input');
-const inputElement = document.createElement('input');  
+const nameInputElement = document.createElement('input');  
+
 /* end of messenger stuff */
 
 
@@ -57,37 +58,39 @@ const userName = {
 const createPlayerNameInputField = () => { 
   const ticTacToeGameField = document.getElementById('gamefield');
   
-  inputElement.type = 'text';
-  inputElement.id = 'player-name-input';
-  inputElement.placeholder = 'Enter your Name';
-  inputElement.autofocus = true;
-  inputElement.required = true;
-  ticTacToeGameField.appendChild(inputElement);   
+  nameInputElement.type = 'text';
+  nameInputElement.id = 'player-name-input';
+  nameInputElement.placeholder = 'Enter your Name';
+  nameInputElement.autofocus = true;
+  nameInputElement.required = true;
+  ticTacToeGameField.appendChild(nameInputElement);   
 
-  positionNameInputElement(inputElement);
+  positionElement(nameInputElement);
 
-  inputElement.addEventListener('keyup', e => {
+  nameInputElement.addEventListener('keyup', e => {
     if (e.keyCode === 13) {
       userName.hasBeenEntered = true;     
-      inputElement.classList.add('player-name-input-remove');                
-      socket.emit('new-user', inputElement.value);         
+      nameInputElement.classList.add('player-name-input-remove');                
+      socket.emit('new-user', nameInputElement.value);        
     };
   });   
 };
 
-const positionNameInputElement = inputElement => {
-  let buttonElement = document.getElementById('3');
-  let buttonElementRect = buttonElement.getBoundingClientRect();  
+const positionElement = el => {
+  let tileElement = document.getElementById('3');
+  let tileElementRect = tileElement.getBoundingClientRect();  
 
-  inputElement.style.position = "absolute";
+  el.style.position = "absolute";  
 
-  window.screen.width > 799 ? inputElement.style.top = `${buttonElement.offsetTop + 19}px` : inputElement.style.top = `${buttonElement.offsetTop}px`;
+  el.style.height = `${tileElementRect.height * 0.75}px`;
 
-  inputElement.style.height = `${buttonElementRect.height}px`;
+  el.style.width = `${tileElementRect.width * 2.75}px`;
 
-  inputElement.style.width = `${buttonElementRect.width * 3}px`;
+  el.style.top = `${tileElement.offsetTop + ((tileElementRect.height - parseInt(el.style.height))/2)}px`;  
 
-  widthChatElements(inputElement.style.width);  
+  el.style.left = `${tileElementRect.left + (((tileElementRect.width * 3) - parseInt(el.style.width))/2)}px`;    
+
+  widthChatElements(`${tileElementRect.width * 3}px`);  
 };
 
 const widthChatElements = width => {
@@ -99,7 +102,7 @@ const widthChatElements = width => {
 };
 
 
-window.addEventListener("resize", () => positionNameInputElement(inputElement));
+window.addEventListener("resize", () => positionElement(nameInputElement));
 
 
 
@@ -221,7 +224,12 @@ const logoutInfo = () => $("#info1").innerHTML = "Timeout. You're disconnected";
 
 const hideStartButton = () => $('#start-button').setAttribute('hidden', 'true');
 
-const showStartButton = () => $('#start-button').removeAttribute('hidden');
+const showStartButton = () => {  
+  const startButton = document.getElementById('start-button');
+  startButton.removeAttribute('hidden');
+  positionElement(startButton);
+  window.addEventListener("resize", () => positionElement(startButton));
+};
 
 const messagePlayerDisconnected = name => name ? $("#info1").innerHTML = `${name} has disconnected.` : 'Your opponent has disconnectd';
 

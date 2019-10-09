@@ -123,7 +123,7 @@ const createReconnectButton = () => {
 };
 
 const inactivityTime = function () {
-  let startDuration = 10000;
+  let startDuration = 20000;
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;

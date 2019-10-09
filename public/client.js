@@ -77,6 +77,7 @@ const createPlayerNameInputField = () => {
 };
 
 const positionElement = el => {
+  console.log(el);
   let tileElement = document.getElementById('3');
   let tileElementRect = tileElement.getBoundingClientRect();  
 
@@ -104,10 +105,25 @@ const widthChatElements = width => {
 
 window.addEventListener("resize", () => positionElement(nameInputElement));
 
+const removeChatArea = () => {
+  $('#chat-area').classList.add('chat-area-diplay-none');
+};
 
+const createReconnectButton = () => {
+  const ticTacToeGameField = document.getElementById('gamefield');
+  const reconnectButtonElement = document.createElement('button');   
+  ticTacToeGameField.appendChild(reconnectButtonElement);   
+  reconnectButtonElement.id = 'reconnect-button';
+  reconnectButtonElement.type = 'button';
+  reconnectButtonElement.classList.add('btn', 'btn-dark');
+  reconnectButtonElement.innerText = 'reconnect'
+  positionElement(reconnectButtonElement);  
+
+  reconnectButtonElement.addEventListener('click', () => {location.reload(); reconnectButtonElement.classList.add('reconnect-button-display-none')})
+};
 
 const inactivityTime = function () {
-  let startDuration = 60000;
+  let startDuration = 10000;
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;
@@ -127,6 +143,8 @@ const inactivityTime = function () {
     emptyInfo3();  
     emptyInfo4();   
     logoutInfo();
+    removeChatArea();
+    createReconnectButton();
     socket.off('message-wait');
     socket.off('message-player-disconnected');
     socket.emit('idle-socket-disconnect', socket.id);   

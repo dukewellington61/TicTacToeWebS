@@ -102,12 +102,20 @@ p {
   display: none;
 }
 
+.reconnect-button-display-none {
+  display: none;
+}
+
 
 /* chat area */
 
 #chat-area {
   display: flex;
   flex-direction: column;
+}
+
+.chat-area-diplay-none {
+  display: none !important;
 }
 
 #message-window {

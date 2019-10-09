@@ -123,6 +123,10 @@ const createReconnectButton = () => {
   window.addEventListener("resize", () => positionElement(reconnectButtonElement));
 };
 
+const sendHeightToParentWindow = () => {    
+  window.parent.postMessage(["disconnect"], "*");
+}
+
 const inactivityTime = function () {
   let startDuration = 20000;
   let durationInMilliseconds = startDuration;
@@ -150,7 +154,8 @@ const inactivityTime = function () {
     socket.off('message-player-disconnected');
     socket.emit('idle-socket-disconnect', socket.id);   
     document.onclick = undefined;
-    document.onkeypress = undefined;       
+    document.onkeypress = undefined;  
+    sendHeightToParentWindow();    
   };
 
   function countDownTimer(val) {

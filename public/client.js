@@ -76,8 +76,7 @@ const createPlayerNameInputField = () => {
   });   
 };
 
-const positionElement = el => {
-  console.log(el);
+const positionElement = el => { 
   let tileElement = document.getElementById('3');
   let tileElementRect = tileElement.getBoundingClientRect();  
 
@@ -119,7 +118,9 @@ const createReconnectButton = () => {
   reconnectButtonElement.innerText = 'reconnect'
   positionElement(reconnectButtonElement);  
 
-  reconnectButtonElement.addEventListener('click', () => {location.reload(); reconnectButtonElement.classList.add('reconnect-button-display-none')})
+  reconnectButtonElement.addEventListener('click', () => {location.reload(); reconnectButtonElement.classList.add('reconnect-button-display-none')});
+
+  window.addEventListener("resize", () => positionElement(reconnectButtonElement));
 };
 
 const inactivityTime = function () {

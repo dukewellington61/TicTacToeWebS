@@ -118,11 +118,11 @@ const createReconnectButton = () => {
   reconnectButtonElement.innerText = 'reconnect'
   positionElement(reconnectButtonElement);  
 
-  reconnectButtonElement.addEventListener('click', () => {location.reload(); reconnectButtonElement.classList.add('reconnect-button-display-none')});
+  reconnectButtonElement.addEventListener('click', () => {location.reload(); hideReconnectButton(); sendMessageToParentWindow('reconnect')});
 
-  window.addEventListener("resize", () => positionElement(reconnectButtonElement));
+  const hideReconnectButton = () => reconnectButtonElement.classList.add('reconnect-button-display-none');
 
-  sendMessageToParentWindow('connect');
+  window.addEventListener("resize", () => positionElement(reconnectButtonElement));  
 };
 
 const sendMessageToParentWindow = message => {     

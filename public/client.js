@@ -121,10 +121,12 @@ const createReconnectButton = () => {
   reconnectButtonElement.addEventListener('click', () => {location.reload(); reconnectButtonElement.classList.add('reconnect-button-display-none')});
 
   window.addEventListener("resize", () => positionElement(reconnectButtonElement));
+
+  sendMessageToParentWindow('connect');
 };
 
-const sendHeightToParentWindow = () => {    
-  window.parent.postMessage(["disconnect"], "*");
+const sendMessageToParentWindow = message => {     
+  window.parent.postMessage([message], "*");
 }
 
 const inactivityTime = function () {
@@ -155,7 +157,7 @@ const inactivityTime = function () {
     socket.emit('idle-socket-disconnect', socket.id);   
     document.onclick = undefined;
     document.onkeypress = undefined;  
-    sendHeightToParentWindow();    
+    sendMessageToParentWindow('disconnect');    
   };
 
   function countDownTimer(val) {

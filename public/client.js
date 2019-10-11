@@ -95,12 +95,9 @@ const positionElement = el => {
 
 const widthChatElements = width => {
   let messageContainerElement = document.getElementById('message-window');
-  // let messageInputElement = document.getElementById('message-input');
-
   messageContainerElement.style.width = width;
   messageInputElement.style.width = width;
 };
-
 
 window.addEventListener("resize", () => positionElement(nameInputElement));
 
@@ -130,7 +127,7 @@ const sendMessageToParentWindow = message => {
 }
 
 const inactivityTime = function () {
-  let startDuration = 20000;
+  let startDuration = 60000;
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;
@@ -265,6 +262,7 @@ const enterNameMessage = () => userName.hasBeenEntered === false ? setTimeout( (
 
 const updateInfo1 = () => $("#info1").innerHTML = playerInfo1.info; 
 
+
 /* more messenger stuff */
 
 const emitOnce = {};
@@ -272,8 +270,22 @@ const emitOnce = {};
 const appendMessage = data => { 
   const inputElement = document.getElementById('player-name-input');   
   const messageElement = document.createElement('div');  
+  messageElement.style.color = 'white';
+  messageElement.style.fontWeight = 'bold';
+  // inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;   
+  
+  if (inputElement.value == data.name) {
+    messageElement.innerText = `You: ${data.message}`;
+    messageElement.style.backgroundColor = 'orange';
+    messageElement.style.opacity = '0.5';
+  } 
 
-  inputElement.value == data.name ? messageElement.innerText = `You: ${data.message}` : messageElement.innerText = `${data.name}: ${data.message}`;    
+  else {
+    messageElement.innerText = `${data.name}: ${data.message}`;   
+    messageElement.style.backgroundColor = 'blue';
+    messageElement.style.opacity = '0.5';
+  };
+
   
   if (emitOnce.done == true) return;
 

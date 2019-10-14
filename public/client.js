@@ -21,11 +21,10 @@ const viewTikTakToe = () => {
     `
     <div id="gamefield">
 
-      <div class="info">
-        <p id="info1"></p>
-        <p>&nbsp;  </p>
-        <p id="info2"></p>
-      </div>
+      
+
+      <div id="info1" class="info"></div>      
+      <div id="info2" class="info"></div>
 
       <table>
         <button class='button' id='0'></button>
@@ -60,15 +59,17 @@ const createPlayerNameInputField = () => {
   
   nameInputElement.type = 'text';
   nameInputElement.id = 'player-name-input';
-  nameInputElement.placeholder = 'Enter your Name';
-  nameInputElement.autofocus = true;
-  nameInputElement.required = true;
+  nameInputElement.placeholder = 'Enter your Name';    
   ticTacToeGameField.appendChild(nameInputElement);   
+  nameInputElement.maxLength = 10;    
 
   positionElement(nameInputElement);
 
+  
   nameInputElement.addEventListener('keyup', e => {
     if (e.keyCode === 13) {
+      if (nameInputElement.value.length === 0) return;
+      if (!nameInputElement.value.replace(/\s/g, '').length) return; //checks if input has only whitespace characters
       userName.hasBeenEntered = true;     
       removeNameInputElement(nameInputElement);                
       socket.emit('new-user', nameInputElement.value);     
@@ -200,18 +201,18 @@ const messageWait = () => $("#info3").innerHTML = "Please wait for an opponent";
 const messageStart = () => $("#info3").innerHTML = "Two players connected.";
 
 const startPlayerInfo = data => {  
-  playerInfo1.info = `Welcome ${data.name}. You're playing as ${data.startPlayer}.`;  
+  playerInfo1.info = `${data.name}, you're ${data.startPlayer}.`;  
   $("#info1").innerHTML = playerInfo1.info;
 };
 
 const secondPlayerInfo = data => {
   if (data.startPlayer === 'X') {    
-    playerInfo1.info = `Welcome ${data.name}. You're playing as O`;   
+    playerInfo1.info = `${data.name}, you're O`;   
     $("#info1").innerHTML = playerInfo1.info; 
   };
 
   if (data.startPlayer === 'O') {    
-    playerInfo1.info = `Welcome ${data.name}. You're playing as X`;   
+    playerInfo1.info = `${data.name}, you're X`;   
     $("#info1").innerHTML = playerInfo1.info; 
   };
 };
@@ -265,7 +266,7 @@ const messagePlayerDisconnected = name => name ? $("#info1").innerHTML = `${name
 
 const messageGameStarted = () => $("#info3").innerHTML = "The game has started.";
 
-const enterNameMessage = () => userName.hasBeenEntered === false ? setTimeout( () => $("#info1").innerHTML = "Please enter your name.", 200) : undefined;
+const enterNameMessage = () => userName.hasBeenEntered === false ? $("#info1").innerHTML = "Please enter your name." : undefined;
 
 const updateInfo1 = () => $("#info1").innerHTML = playerInfo1.info; 
 
@@ -327,7 +328,7 @@ const scrollDown = () => {
 
 socket.on('push', () => {
   viewTikTakToe();
-  createPlayerNameInputField()
+  setTimeout( () =>  createPlayerNameInputField(), 200);
 });
 
 socket.on('hide-start-button', () => hideStartButton());

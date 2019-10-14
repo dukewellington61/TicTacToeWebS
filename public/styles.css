@@ -60,14 +60,13 @@ body {
   font-size: 1em;
   color: red;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  display: flex;
-  justify-content: space-between;
+  text-align: center;
 }
 
-#info3 {
+/* #info3 {
   display: flex;
   justify-content: center;
-}
+} */
 
 p {
   margin: 0;

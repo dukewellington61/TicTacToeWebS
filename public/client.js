@@ -128,9 +128,8 @@ const createReconnectButton = () => {
   window.addEventListener("resize", () => positionElement(reconnectButtonElement));  
 };
 
-const sendHeightToParentWindow = () => {   
-  const bodyHeight = $('body').offsetHeight;  
-  window.parent.postMessage(`${bodyHeight}px`, "*");
+const sendHeightToParentWindow = () => {     
+  window.parent.postMessage(`${bodyHeight + 100}px`, "*");
 };
 
 const inactivityTime = function () {

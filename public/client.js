@@ -70,11 +70,17 @@ const createPlayerNameInputField = () => {
   nameInputElement.addEventListener('keyup', e => {
     if (e.keyCode === 13) {
       userName.hasBeenEntered = true;     
-      nameInputElement.classList.add('player-name-input-remove');                
-      socket.emit('new-user', nameInputElement.value);        
+      removeNameInputElement(nameInputElement);                
+      socket.emit('new-user', nameInputElement.value);     
+      displayChatArea();
+      sendHeightToParentWindow();
     };
   });   
 };
+
+const displayChatArea = () => $('#chat-area').classList.remove('chat-area-display-none');
+
+const removeNameInputElement = el => el.classList.add('player-name-input-remove'); 
 
 const positionElement = el => { 
   let tileElement = document.getElementById('3');
@@ -115,19 +121,20 @@ const createReconnectButton = () => {
   reconnectButtonElement.innerText = 'reconnect'
   positionElement(reconnectButtonElement);  
 
-  reconnectButtonElement.addEventListener('click', () => {location.reload(); hideReconnectButton(); sendMessageToParentWindow('reconnect')});
+  reconnectButtonElement.addEventListener('click', () => {location.reload(); hideReconnectButton(); sendHeightToParentWindow()});
 
   const hideReconnectButton = () => reconnectButtonElement.classList.add('reconnect-button-display-none');
 
   window.addEventListener("resize", () => positionElement(reconnectButtonElement));  
 };
 
-const sendMessageToParentWindow = message => {     
-  window.parent.postMessage([message], "*");
-}
+const sendHeightToParentWindow = () => {   
+  const bodyHeight = $('body').offsetHeight;  
+  window.parent.postMessage(`${bodyHeight}px`, "*");
+};
 
 const inactivityTime = function () {
-  let startDuration = 60000;
+  let startDuration = 20000;
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;
@@ -154,7 +161,7 @@ const inactivityTime = function () {
     socket.emit('idle-socket-disconnect', socket.id);   
     document.onclick = undefined;
     document.onkeypress = undefined;  
-    sendMessageToParentWindow('disconnect');    
+    sendHeightToParentWindow();    
   };
 
   function countDownTimer(val) {

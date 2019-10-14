@@ -112,8 +112,8 @@ function createRoom(socket) {
             obj.player1backup.emit('disable-client');              
             obj.player2backup.emit('enable-client');        
     
-            obj.player2.emit('to-move', {moveMessage: `Your turn, ${obj[obj.player2.id]}`});
-            obj.player1.emit('to-move', {moveMessage: `${obj[obj.player2.id]}'s turn`});     
+            if (obj.player2) obj.player2.emit('to-move', {moveMessage: `Your turn, ${obj[obj.player2.id]}`});
+            if (obj.player1) obj.player1.emit('to-move', {moveMessage: `${obj[obj.player2.id]}'s turn`});     
     
             if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
               
@@ -158,8 +158,8 @@ function createRoom(socket) {
             obj.player2backup.emit('disable-client');
             obj.player1backup.emit('enable-client');   
 
-            obj.player1.emit('to-move', {moveMessage: `Your turn, ${obj[obj.player1.id]}`});
-            obj.player2.emit('to-move', {moveMessage: `${obj[obj.player1.id]}'s turn`});     
+            if (obj.player1) obj.player1.emit('to-move', {moveMessage: `Your turn, ${obj[obj.player1.id]}`});
+            if (obj.player2) obj.player2.emit('to-move', {moveMessage: `${obj[obj.player1.id]}'s turn`});     
     
             if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
               

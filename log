@@ -373,6 +373,9 @@ on game won player2 also has start game button ----- solved
 personalize win message: instead of 'Game Over: Player X has won!' --> 'Game Over: name has won!' --- solved
 
 
+
+
+
 write documentation:
 
 how double emit is beeing avoided (mostly)

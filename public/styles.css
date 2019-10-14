@@ -114,6 +114,10 @@ p {
   flex-direction: column;
 }
 
+.chat-area-display-none {
+  display: none !important;
+}
+
 .chat-area-diplay-none {
   display: none !important;
 }

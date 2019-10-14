@@ -128,7 +128,8 @@ const createReconnectButton = () => {
   window.addEventListener("resize", () => positionElement(reconnectButtonElement));  
 };
 
-const sendHeightToParentWindow = () => {     
+const sendHeightToParentWindow = () => {   
+  const bodyHeight = $('body').scrollHeight;  
   window.parent.postMessage(`${bodyHeight + 100}px`, "*");
 };
 

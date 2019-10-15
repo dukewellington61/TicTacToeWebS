@@ -190,6 +190,23 @@ const inactivityTime = function () {
     intervalVar = setInterval(() => countDownTimer(), 1000);
     time = setTimeout(() => {logout(); stopInterval(intervalVar)}, durationInMilliseconds);    
   };
+
+  function getTime() {
+    return (new Date()).getTime();
+  };
+
+  var lastInterval = getTime();
+
+  function intervalHeartbeat() {
+    var now = getTime();
+    var diff = now - lastInterval;
+    var offBy = diff - 1000; // 1000 = the 1 second delay I was expecting
+    lastInterval = now;
+
+    if (offBy > 60000) logout()
+  };
+
+setInterval(intervalHeartbeat, 1000);
 };
 
 inactivityTime();

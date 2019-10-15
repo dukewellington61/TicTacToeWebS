@@ -189,15 +189,10 @@ const inactivityTime = function () {
     countDown.visible = false;
     intervalVar = setInterval(() => countDownTimer(), 1000);
     time = setTimeout(() => {logout(); stopInterval(intervalVar)}, durationInMilliseconds);    
-  };  
-
-  document.addEventListener("visibilitychange", () => setTimeout( () => logout(), 60000));
-
+  };
 };
 
 inactivityTime();
-
-
 
 const playerInfo1 = {};
   

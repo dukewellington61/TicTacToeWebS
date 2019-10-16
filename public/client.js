@@ -189,10 +189,11 @@ const inactivityTime = function () {
     countDown.visible = false;
     intervalVar = setInterval(() => countDownTimer(), 1000);
     time = setTimeout(() => {logout(); stopInterval(intervalVar)}, durationInMilliseconds);    
-  };
-};
+  };   
+};  
 
 inactivityTime();
+
 
 const playerInfo1 = {};
   
@@ -326,6 +327,8 @@ const scrollDown = () => {
 
 /* end of more messenger stuff */
 
+document.addEventListener('message', () => console.log('yeah-yeah'));
+
 socket.on('push', () => {
   viewTikTakToe();
   setTimeout( () =>  createPlayerNameInputField(), 200);
@@ -390,11 +393,4 @@ $("#TikTakToe").addEventListener("click", e => {
       else socket.emit("move", e.composedPath()[0].id);
     };
 });
-
-
-
-
-
-
-
 

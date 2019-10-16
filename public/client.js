@@ -327,7 +327,7 @@ const scrollDown = () => {
 
 /* end of more messenger stuff */
 
-window.addEventListener('reload', () => console.log('yeah-yeah'));
+window.addEventListener('message', () => console.log('yeah-yeah'));
 
 socket.on('push', () => {
   viewTikTakToe();

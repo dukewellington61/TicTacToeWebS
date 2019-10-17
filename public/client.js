@@ -129,9 +129,12 @@ const createReconnectButton = () => {
   window.addEventListener("resize", () => positionElement(reconnectButtonElement));  
 };
 
-const sendHeightToParentWindow = () => {   
-  const bodyHeight = $('body').scrollHeight;  
-  window.parent.postMessage(`${bodyHeight + 100}px`, "*");
+const sendHeightToParentWindow = val => {   
+  if (val) window.parent.postMessage(`85vw`, "*");
+  else {
+    const bodyHeight = $('body').scrollHeight;  
+    window.parent.postMessage(`${bodyHeight + 100}px`, "*");
+  };
 };
 
 const inactivityTime = function () {
@@ -329,7 +332,7 @@ const scrollDown = () => {
 
 window.addEventListener('message', msg => {
   if (msg.data === 'reload-app') location.reload();
-  sendHeightToParentWindow();
+  sendHeightToParentWindow(msg);
 });
 
 socket.on('push', () => {

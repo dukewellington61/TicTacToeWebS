@@ -327,12 +327,13 @@ const scrollDown = () => {
 
 /* end of more messenger stuff */
 
-window.addEventListener('reload-app', () => location.reload());
+const locationReload = msg => {
+  if (msg === 'message') location.reload();
+};
 
-socket.on('push', () => {
-  viewTikTakToe();
-  setTimeout( () =>  createPlayerNameInputField(), 200);
-});
+window.addEventListener('message', msg => {locationReload(msg); sendHeightToParentWindow()});
+
+socket.on('push', () => {viewTikTakToe(); setTimeout( () =>  createPlayerNameInputField(), 200)});
 
 socket.on('hide-start-button', () => hideStartButton());
 
@@ -356,19 +357,13 @@ socket.on('disable-client', () => disableClient());
 
 socket.on('enable-client', () => enableClient());
 
-socket.on('end-message', message => {     
-  emptyInfo2();
-  endMessage(message.winMessage);     
-});
+socket.on('end-message', message => {emptyInfo2(); endMessage(message.winMessage)});
 
 socket.on('empty-info3', () => emptyInfo3());
 
 socket.on('empty-info2', () => emptyInfo2());
 
-socket.on('message-player-disconnected', name => {
-  messagePlayerDisconnected(name);
-  emptyInfo4(); 
-});
+socket.on('message-player-disconnected', name => {messagePlayerDisconnected(name); emptyInfo4()});
 
 socket.on('game-has-started', () => {messageGameStarted(); updateInfo1()});
 
@@ -395,7 +390,7 @@ $("#TikTakToe").addEventListener("click", e => {
 });
 
 const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
-  
+  console.log('5 seconds interval');
   if (!document.querySelector('#info3') 
     && !document.querySelector('#player-name-input') 
     && !document.querySelector('#start-button') 

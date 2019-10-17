@@ -394,4 +394,10 @@ $("#TikTakToe").addEventListener("click", e => {
     };
 });
 
-setInterval( () =>  window.parent.postMessage('ping', "*"), 1000);
+// setInterval( () =>  window.parent.postMessage('ping', "*"), 1000);
+
+const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {  
+  if (!document.querySelector('#info3')) console.log('app-sleeps');  
+};
+
+setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);

@@ -327,7 +327,10 @@ const scrollDown = () => {
 
 /* end of more messenger stuff */
 
-window.addEventListener('message', () => location.reload());
+window.addEventListener('message', msg => {
+  if (msg === 'reload-app') location.reload();
+  sendHeightToParentWindow();
+});
 
 socket.on('push', () => {
   viewTikTakToe();

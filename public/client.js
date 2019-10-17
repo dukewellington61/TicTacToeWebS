@@ -328,8 +328,7 @@ const scrollDown = () => {
 /* end of more messenger stuff */
 
 window.addEventListener('message', msg => {
-  if (msg === 'reload-app') location.reload();
-  sendHeightToParentWindow();
+  console.log(msg);
 });
 
 socket.on('push', () => {
@@ -391,16 +390,16 @@ $("#TikTakToe").addEventListener("click", e => {
     };
 });
 
-const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
-  console.log('5 seconds interval');
-  if (!document.querySelector('#info3') 
-    && !document.querySelector('#player-name-input') 
-    && !document.querySelector('#start-button') 
-    && !document.querySelector('#reconnect-button')) {
-      window.parent.postMessage('app-sleeps', "*");
-      console.log('app-sleeps');
-    };
+// const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
+//   console.log('5 seconds interval');
+//   if (!document.querySelector('#info3') 
+//     && !document.querySelector('#player-name-input') 
+//     && !document.querySelector('#start-button') 
+//     && !document.querySelector('#reconnect-button')) {
+//       window.parent.postMessage('app-sleeps', "*");
+//       console.log('app-sleeps');
+//     };
 
-}
+// }
 
-setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 5000);
+// setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 5000);

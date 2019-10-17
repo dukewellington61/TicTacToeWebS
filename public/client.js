@@ -401,11 +401,7 @@ const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
   let playerNameInputEl = document.querySelector('#player-name-input');
   let reconnectButtonEl = document.querySelector('#reconnect-button');
 
-  // if (!info3Elel.innerText && playerNameInputEl.classList.contains('player-name-input-remove') && reconnectButtonEl.classList.contains('reconnect-button-display-none')) {
-  //   console.log('app sleeps');
-  // };
-
-  if (playerNameInputEl.classList.contains('player-name-input-remove')) {
+  if (!info3Elel.innerText && playerNameInputEl.classList.contains('player-name-input-remove') && reconnectButtonEl.classList.contains('reconnect-button-display-none')) {
     console.log('app sleeps');
   };
   

@@ -328,7 +328,8 @@ const scrollDown = () => {
 /* end of more messenger stuff */
 
 window.addEventListener('message', msg => {
-  console.log(msg);
+  if (msg.data === 'reload-app') location.reload();
+  sendHeightToParentWindow();
 });
 
 socket.on('push', () => {

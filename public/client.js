@@ -327,13 +327,12 @@ const scrollDown = () => {
 
 /* end of more messenger stuff */
 
-const locationReload = msg => {
-  if (msg === 'message') location.reload();
-};
+window.addEventListener('message', () => location.reload());
 
-window.addEventListener('message', msg => {locationReload(msg); sendHeightToParentWindow()});
-
-socket.on('push', () => {viewTikTakToe(); setTimeout( () =>  createPlayerNameInputField(), 200)});
+socket.on('push', () => {
+  viewTikTakToe();
+  setTimeout( () =>  createPlayerNameInputField(), 200);
+});
 
 socket.on('hide-start-button', () => hideStartButton());
 

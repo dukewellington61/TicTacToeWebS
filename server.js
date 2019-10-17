@@ -47,7 +47,7 @@ function createRoom(socket) {
             obj[obj.player1backup.id] = name;  
             obj.fn(); 
             if (obj.player1) obj.player1.emit('start-player', {startPlayer: startPlayer, name: obj[obj.player1.id]});   
-            if (obj.player2) obj.player2.emit('secon-player', {startPlayer: startPlayer, name: obj[obj.player2.id]});
+            if (obj.player2) obj.player2.emit('second-player', {startPlayer: startPlayer, name: obj[obj.player2.id]});
             if (obj.player1 && obj.player2) obj.player1.emit('user-connected', obj[obj.player2.id]);
             if (obj.player2) obj.player2.emit('user-connected', obj[obj.player1.id]);          
         });

@@ -397,8 +397,18 @@ $("#TikTakToe").addEventListener("click", e => {
 // setInterval( () =>  window.parent.postMessage('ping', "*"), 1000);
 
 const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {  
-  let el = document.querySelector('#info3');
-  if (!el.innerText) console.log('app sleeps)');
+  let info3Elel = document.querySelector('#info3');
+  let playerNameInputEl = document.querySelector('#player-name-input');
+  let reconnectButtonEl = document.querySelector('#reconnect-button');
+
+  // if (!info3Elel.innerText && playerNameInputEl.classList.contains('player-name-input-remove') && reconnectButtonEl.classList.contains('reconnect-button-display-none')) {
+  //   console.log('app sleeps');
+  // };
+
+  if (playerNameInputEl.classList.contains('player-name-input-remove')) {
+    console.log('app sleeps');
+  };
+  
 };
 
 setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);

@@ -410,7 +410,10 @@ const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
   //     window.parent.postMessage('app-sleeps', "*");
   // };
 
-  if (!info3Elel.innerText) window.parent.postMessage('app-sleeps', "*");  
+  if (!info3Elel.innerText) {
+    window.parent.postMessage('app-sleeps', "*");  
+    console.log('app-sleeps');
+  };
 };
 
 setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);

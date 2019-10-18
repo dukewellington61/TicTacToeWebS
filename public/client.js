@@ -402,18 +402,18 @@ const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
   let reconnectButtonEl = document.querySelector('#reconnect-button');  
   let chatAreaEl = document.querySelector('#chat-area');
 
-  // if (
-  //   !info3Elel.innerText 
-  //   && playerNameInputEl.classList.contains('player-name-input-remove') 
-  //   && !reconnectButtonEl 
-  //   && chatAreaEl.classList.contains('chat-area-diplay-none')) {
-  //     window.parent.postMessage('app-sleeps', "*");
-  // };
-
-  if (!info3Elel.innerText) {
-    window.parent.postMessage('app-sleeps', "*");  
-    console.log('app-sleeps');
+  if (
+    !info3Elel.innerText 
+    && playerNameInputEl.classList.contains('player-name-input-remove') 
+    && !reconnectButtonEl 
+    && chatAreaEl.classList.contains('chat-area-diplay-none')) {
+      window.parent.postMessage('app-sleeps', "*");
   };
+
+  // if (!info3Elel.innerText) {
+  //   window.parent.postMessage('app-sleeps', "*");  
+  //   console.log('app-sleeps');
+  // };
 };
 
 setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);

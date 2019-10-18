@@ -398,10 +398,8 @@ $("#TikTakToe").addEventListener("click", e => {
 
 const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {  
   let info3Elel = document.querySelector('#info3');
-  let playerNameInputEl = document.querySelector('#player-name-input');
-  console.log(playerNameInputEl);
-  let reconnectButtonEl = document.querySelector('#reconnect-button');
-  console.log(reconnectButtonEl);
+  let playerNameInputEl = document.querySelector('#player-name-input');  
+  let reconnectButtonEl = document.querySelector('#reconnect-button');  
 
   if (!info3Elel.innerText && playerNameInputEl.classList.contains('player-name-input-remove') && !reconnectButtonEl) {
     console.log('app sleeps');

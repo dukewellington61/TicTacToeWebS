@@ -407,7 +407,7 @@ const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
     && playerNameInputEl.classList.contains('player-name-input-remove') 
     && !reconnectButtonEl 
     && chatAreaEl.classList.contains('chat-area-diplay-none')) {
-      console.log('app sleeps');
+      window.parent.postMessage('app-sleeps', "*");
   };
   
 };

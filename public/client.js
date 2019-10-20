@@ -20,9 +20,7 @@ const viewTikTakToe = () => {
   return $("#TikTakToe").innerHTML = ejs.render(
     `
     <div id="gamefield">
-
-      
-
+    
       <div id="info1" class="info"></div>      
       <div id="info2" class="info"></div>
 
@@ -138,7 +136,7 @@ const sendHeightToParentWindow = val => {
 };
 
 const inactivityTime = function () {
-  let startDuration = 60000;
+  let startDuration = 600000;
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;
@@ -408,6 +406,7 @@ const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
     && !reconnectButtonEl 
     && chatAreaEl.classList.contains('chat-area-diplay-none')) {
       window.parent.postMessage('app-sleeps', "*");
+      console.log('style.js: app-sleeps');
   };
 
   // if (!info3Elel.innerText) {

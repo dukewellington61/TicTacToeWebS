@@ -288,7 +288,7 @@ io.on("connection", socket => {
       };         
     };  
 
-    if (!roomsArray[0] && !roomsArray[1] && !roomsArray[2]) console.log('Disconnect roomsArray[0].player1: no have ? roomsArray[0].player2: no have');
+    if (!roomsArray[0] && !roomsArray[1] && !roomsArray[2]) console.log('no rooms');
     if (roomsArray[0]) console.log(`Disconnect roomsArray[0].player1: ${roomsArray[0].player1 ? roomsArray[0].player1 : 'no have'} & roomsArray[0].player2: ${roomsArray[0].player2 ? roomsArray[0].player2 : 'no have'}`);
     if (roomsArray[1]) console.log(`Disconnect roomsArray[1].player1: ${roomsArray[1].player1 ? roomsArray[1].player1 : 'no have'} & roomsArray[1].player2: ${roomsArray[1].player2 ? roomsArray[1].player2 : 'no have'}`);
     if (roomsArray[2]) console.log(`Disconnect roomsArray[2].player1: ${roomsArray[2].player1 ? roomsArray[2].player1 : 'no have'} & roomsArray[1].player2: ${roomsArray[2].player2 ? roomsArray[2].player2 : 'no have'}`);        

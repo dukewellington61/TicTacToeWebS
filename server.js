@@ -86,7 +86,7 @@ GameRoom.prototype.fn = function () {
 
     if (this.player1 != undefined && this.player2 != undefined) {
       this.userArray().forEach( player => player.on('new-game', () => {
-        this.player1.emit('enable-client');
+        this.player1backup.emit('enable-client');
         newGame.gameField = ["","","","","","","","",""];
         this.userArray().forEach( player => player.emit('game-field', newGame.gameField));  
         this.userArray().forEach( player => player.emit("message-start"));            

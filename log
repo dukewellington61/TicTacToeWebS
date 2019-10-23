@@ -390,3 +390,32 @@ styling:
 position enter-name-field in the middle of gamefield using js --- solved
 
 below gamefield button send message to name 
+
+
+
+
+
+24.10.
+
+situation:
+
+code refactored: constructor function, prototype, this
+
+prob:
+
+4 players - disconnect gameRoom1 player 1 and gameRoom2 player 2 (without enter name):
+
+/home/theironduke/webdev/JS_Kurs/Teil_4/TicTacToeWebS/server.js:47
+      this[this.player1.id] = name;  
+
+TypeError: Cannot read property 'id' of undefined
+    at Socket.player1.on.name (/home/theironduke/webdev/JS_Kurs/Teil_4/TicTacToeWebS/server.js:47:25)
+    at Socket.emit (events.js:203:15)
+    at /home/theironduke/webdev/JS_Kurs/Teil_4/TicTacToeWebS/node_modules/socket.io/lib/socket.js:503:12
+    at process._tickCallback (internal/process/next_tick.js:61:11)
+
+
+I think the reason for this is that the this keywords point to an abject which doesn't exist anymore --> solution replace this with roomsArray[index];
+
+
+otherwhise replace this.player1 with this.playerbackup1 (and likeweise for player2);

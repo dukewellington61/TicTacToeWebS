@@ -68,6 +68,9 @@ GameRoom.prototype.fn = function () {
 
   this.userArray().forEach( player => player.emit('enter-name-message'));  
 
+  this.player1backup = this.player1;
+  this.player2backup = this.player2;
+
   if (this.player1 && !this[this.player1.id] || this.player2 && !this[this.player2.id]) {        
     return;
   }
@@ -98,9 +101,7 @@ GameRoom.prototype.fn = function () {
       
       this.player1.emit('show-start-button');
     
-      this.userArray().forEach( player => player.emit('disable-client'));      
-      
-      this.player2backup = this.player2;
+      this.userArray().forEach( player => player.emit('disable-client'));            
                   
       this.player1.on('move', (field) => {          
         const message = newGame.move(startPlayer, field);        
@@ -143,10 +144,7 @@ GameRoom.prototype.fn = function () {
 
         };
         this.userArray().forEach( player => player.emit('disable-occupied-fields', newGame.gameField));          
-      });
-
-      this.player1backup = this.player1;
-      this.player2backup = this.player2;
+      });      
 
       this.player2.on('move', (field) => {          
         const message = newGame.move(secondPlayer, field);        
@@ -199,8 +197,8 @@ GameRoom.prototype.fnPlayerDisconnect = function (id) {
               
   gameModule.Game().gameField = ["","","","","","","","",""];
   this.userArray().forEach( player => player.emit('game-field', gameModule.Game().gameField)); 
-  if (this.player1) this.player1.emit('message-player-disconnected', this[this.player2.id]);
-  if (this.player2) this.player2.emit('message-player-disconnected', this[this.player1.id]);     
+  if (this.player1) this.player1.emit('message-player-disconnected', this[this.player2backup.id]);
+  if (this.player2) this.player2.emit('message-player-disconnected', this[this.player1backup.id]);     
   this.userArray().forEach( player => player.emit("message-wait"));
   this.userArray().forEach( player => player.emit('empty-info2'));
   this.userArray().forEach( player => player.emit('hide-start-button'));      

@@ -47,7 +47,7 @@ GameRoom.prototype.fn = function () {
       this[this.player1.id] = name;  
       this.fn(); 
         if (this.player1) this.player1.emit('start-player', {startPlayer: startPlayer, name: this[this.player1.id]});   
-        if (this.player2) this.player2.emit('second-player', {startPlayer: startPlayer, name: this[this.player2.id]});
+        // if (this.player2) this.player2.emit('second-player', {startPlayer: startPlayer, name: this[this.player2.id]});
         if (this.player1 && this.player2) this.player1.emit('user-connected', this[this.player2.id]);
         if (this.player2) this.player2.emit('user-connected', this[this.player1.id]);          
     });
@@ -59,7 +59,7 @@ GameRoom.prototype.fn = function () {
                 
       this[this.player2.id] = name;  
         this.fn();    
-        if (this.player1) this.player1.emit('start-player', {startPlayer: startPlayer, name: this[this.player1.id]});   
+        // if (this.player1) this.player1.emit('start-player', {startPlayer: startPlayer, name: this[this.player1.id]});   
         if (this.player2) this.player2.emit('second-player', {startPlayer: startPlayer, name: this[this.player2.id]});
         if (this.player1) this.player1.emit('user-connected', this[this.player2.id]);
         if (this.player2) this.player2.emit('user-connected', this[this.player1.id]);      

@@ -261,8 +261,8 @@ io.on("connection", socket => {
     for (let i = 0; i < roomsArray.length; i++) {      
 
       if (roomsArray[i].player1 && roomsArray[i].player1.id === id) {
-        roomsArray[i].player1.fnPlayerDisconnect;
-        roomsArray[i].player1.userArray; 
+        roomsArray[i].fnPlayerDisconnect();
+        roomsArray[i].userArray(); 
 
         delete roomsArray[i].player1;          
          
@@ -271,8 +271,8 @@ io.on("connection", socket => {
       };
 
       if (roomsArray[i] && roomsArray[i].player2 && roomsArray[i].player2.id === id) {
-        roomsArray[i].player2.fnPlayerDisconnect;
-        roomsArray[i].player2.userArray;   
+        roomsArray[i].fnPlayerDisconnect();
+        roomsArray[i].userArray();   
 
         delete roomsArray[i].player2;        
            

@@ -199,8 +199,8 @@ GameRoom.prototype.fnPlayerDisconnect = function (id) {
               
   gameModule.Game().gameField = ["","","","","","","","",""];
   this.userArray().forEach( player => player.emit('game-field', gameModule.Game().gameField)); 
-  if (this.player1 && this.player2) this.player1.emit('message-player-disconnected', this[this.player2backup.id]);
-  if (this.player2) this.player2.emit('message-player-disconnected', this[this.player1backup.id]);     
+  if (this.player1) this.player1.emit('message-player-disconnected', this[this.player2.id]);
+  if (this.player2) this.player2.emit('message-player-disconnected', this[this.player1.id]);     
   this.userArray().forEach( player => player.emit("message-wait"));
   this.userArray().forEach( player => player.emit('empty-info2'));
   this.userArray().forEach( player => player.emit('hide-start-button'));      

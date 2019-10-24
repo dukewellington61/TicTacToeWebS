@@ -34,6 +34,8 @@ GameRoom.prototype.userArray = function () {
 
 GameRoom.prototype.fn = function () {         
 
+  const player1backup = this.player1;
+  const player2backup = this.player2;
   
   const newGame = gameModule.Game();   
 
@@ -43,11 +45,10 @@ GameRoom.prototype.fn = function () {
   if (this.player1) {    
 
     this.player1.on('new-user', name => {
-                 
-      this[this.player1.id] = name;  
+                  
+      this[player1backup.id] = name;  
       this.fn(); 
-        if (this.player1) this.player1.emit('start-player', {startPlayer: startPlayer, name: this[this.player1.id]});   
-        // if (this.player2) this.player2.emit('second-player', {startPlayer: startPlayer, name: this[this.player2.id]});
+        if (this.player1) this.player1.emit('start-player', {startPlayer: startPlayer, name: this[this.player1.id]});         
         if (this.player1 && this.player2) this.player1.emit('user-connected', this[this.player2.id]);
         if (this.player2) this.player2.emit('user-connected', this[this.player1.id]);          
     });
@@ -57,9 +58,8 @@ GameRoom.prototype.fn = function () {
 
     this.player2.on('new-user', name => {
                 
-      this[this.player2.id] = name;  
-        this.fn();    
-        // if (this.player1) this.player1.emit('start-player', {startPlayer: startPlayer, name: this[this.player1.id]});   
+      this[player2backup.id] = name;  
+        this.fn();               
         if (this.player2) this.player2.emit('second-player', {startPlayer: startPlayer, name: this[this.player2.id]});
         if (this.player1) this.player1.emit('user-connected', this[this.player2.id]);
         if (this.player2) this.player2.emit('user-connected', this[this.player1.id]);      
@@ -170,13 +170,13 @@ GameRoom.prototype.fn = function () {
           };
 
           if (secondPlayer === 'X' && message === 'Game Over: Player X has won!') {
-            this.player2.emit('end-message', {winMessage: `Congratulations! You've won!`});
-            this.player1.emit('end-message', {winMessage: `You've lost. ${this[this.player2.id]} is the winner.`});
+            this.player2backup.emit('end-message', {winMessage: `Congratulations! You've won!`});
+            this.player1backup.emit('end-message', {winMessage: `You've lost. ${this[this.player2backup.id]} is the winner.`});
           };
 
           if (secondPlayer === 'O' && message === 'Game Over: Player O has won!') {
-            this.player2.emit('end-message', {winMessage: `Congratulations! You've won!`});
-            this.player1.emit('end-message', {winMessage: `You've lost. ${this[this.player2.id]} is the winner.`});
+            this.player2backup.emit('end-message', {winMessage: `Congratulations! You've won!`});
+            this.player1backup.emit('end-message', {winMessage: `You've lost. ${this[this.player2backup.id]} is the winner.`});
           };
 
           if (message === "It's a draw.") this.userArray().forEach( player => player.emit('end-message', {winMessage: "It's a draw."}));             
@@ -198,8 +198,8 @@ GameRoom.prototype.fnPlayerDisconnect = function (id) {
               
   gameModule.Game().gameField = ["","","","","","","","",""];
   this.userArray().forEach( player => player.emit('game-field', gameModule.Game().gameField)); 
-  if (this.player1) this.player1.emit('message-player-disconnected', this[this.player2.id]);
-  if (this.player2) this.player2.emit('message-player-disconnected', this[this.player1.id]);     
+  if (this.player1) this.player1.emit('message-player-disconnected', this[this.player2backup.id]);
+  if (this.player2) this.player2.emit('message-player-disconnected', this[this.player1backup.id]);     
   this.userArray().forEach( player => player.emit("message-wait"));
   this.userArray().forEach( player => player.emit('empty-info2'));
   this.userArray().forEach( player => player.emit('hide-start-button'));      

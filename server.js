@@ -298,12 +298,7 @@ io.on("connection", socket => {
       };      
     };    
 
-    if (roomIndexArr.length === 2) {
-
-      // console.log(
-      //   `uniteLonelyPlayers length: ${roomsArray.length} roomsArray[0] ${roomsArray[0] ? roomsArray[0] : 'no have'} & roomsArray[1] ${roomsArray[1] ? roomsArray[1] : 'no have'} & roomsArray[2] ${roomsArray[2] ? roomsArray[2] : 'no have'}`
-      // ); 
-      
+    if (roomIndexArr.length === 2) {      
 
       let room1Player1;
       let room1Player2;

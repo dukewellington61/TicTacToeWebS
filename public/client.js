@@ -20,9 +20,11 @@ const viewTikTakToe = () => {
   return $("#TikTakToe").innerHTML = ejs.render(
     `
     <div id="gamefield">
-    
-      <div id="info1" class="info"></div>      
-      <div id="info2" class="info"></div>
+
+      <div id="info1and2container">     
+        <div id="info1" class="info"></div>      
+        <div id="info2" class="info"></div>
+      </div>
 
       <table>
         <button class='button' id='0'></button>

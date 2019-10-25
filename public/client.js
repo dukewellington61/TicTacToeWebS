@@ -138,7 +138,7 @@ const sendHeightToParentWindow = val => {
 };
 
 const inactivityTime = function () {
-  let startDuration = 60000;
+  let startDuration = 600000;
   let durationInMilliseconds = startDuration;
   let durationInSeconds = durationInMilliseconds/1000;
   let time;

@@ -60,7 +60,7 @@ body {
   display: flex;
   flex-direction: row;
   text-align: center;
-  height: 1em !important;
+  height: 1.5em !important;
 }
 
 @media only screen and (min-width: 598px) {
@@ -77,6 +77,10 @@ body {
   color: red;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: center;
+}
+
+#info2 {
+  color: coral;
 }
 
 p {

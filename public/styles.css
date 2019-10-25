@@ -79,8 +79,13 @@ body {
   text-align: center;
 }
 
+#info2 {  
+  text-align: left;
+}
+
 #info2 {
   color: coral;
+  text-align: right;
 }
 
 p {

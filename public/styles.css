@@ -58,19 +58,14 @@ body {
 
 #info1and2container {
   display: flex;
-  flex-direction: row;
-  text-align: center;
-  height: 1.5em !important;
+  flex-direction: row;  
+  height: 1em !important;
+  justify-content: center;
 }
 
-@media only screen and (min-width: 598px) {
-  #info1and2container {
-    display: flex;
-    flex-direction: row;
-    text-align: center;
-    height: 1em !important;
-  }
-}
+/* .centerInfo1 {
+  justify-content: center !important;
+} */
 
 .info {
   font-size: 1em;
@@ -79,13 +74,12 @@ body {
   text-align: center;
 }
 
-#info2 {  
-  text-align: left;
+#info1 {  
+  text-align: center;
 }
 
 #info2 {
-  color: coral;
-  text-align: right;
+  color: coral; 
 }
 
 p {

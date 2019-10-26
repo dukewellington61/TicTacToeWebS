@@ -90,7 +90,7 @@ GameRoom.prototype.fn = function () {
         newGame.gameField = ["","","","","","","","",""];
         this.userArray().forEach( player => player.emit('game-field', newGame.gameField));  
         this.userArray().forEach( player => player.emit("message-start"));            
-        this.player1backup.emit('to-move', {moveMessage: `Your turn, ${this[this.player1backup.id]}`});
+        this.player1backup.emit('to-move', {moveMessage: 'Your turn.'});
         this.player2backup.emit('to-move', {moveMessage: `${this[this.player1backup.id]}'s turn`});
         this.player1backup.emit('hide-start-button');         
         this.userArray().forEach( player => player.emit('game-has-started'));         
@@ -111,7 +111,7 @@ GameRoom.prototype.fn = function () {
         this.player1backup.emit('disable-client');              
         this.player2backup.emit('enable-client');        
 
-        if (this.player2) this.player2.emit('to-move', {moveMessage: `Your turn, ${this[this.player2.id]}`});
+        if (this.player2) this.player2.emit('to-move', {moveMessage: 'Your turn'});
         if (this.player1) this.player1.emit('to-move', {moveMessage: `${this[this.player2.id]}'s turn`});     
 
         if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {
@@ -154,7 +154,7 @@ GameRoom.prototype.fn = function () {
         this.player2backup.emit('disable-client');
         this.player1backup.emit('enable-client');   
 
-        if (this.player1) this.player1.emit('to-move', {moveMessage: `Your turn, ${this[this.player1.id]}`});
+        if (this.player1) this.player1.emit('to-move', {moveMessage: 'Your turn'});
         if (this.player2) this.player2.emit('to-move', {moveMessage: `${this[this.player1.id]}'s turn`});     
 
         if (message === 'Game Over: Player X has won!' || message === 'Game Over: Player O has won!' || message === "It's a draw.") {

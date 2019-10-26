@@ -205,18 +205,18 @@ const messageWait = () => $("#info3").innerHTML = "Please wait for an opponent";
 const messageStart = () => $("#info3").innerHTML = "Two players connected.";
 
 const startPlayerInfo = data => {  
-  playerInfo1.info = `${data.name}, you're ${data.startPlayer}.`;  
+  playerInfo1.info = `${data.name}, you're ${data.startPlayer}.&nbsp;&nbsp;`;  
   $("#info1").innerHTML = playerInfo1.info;
 };
 
 const secondPlayerInfo = data => {
   if (data.startPlayer === 'X') {    
-    playerInfo1.info = `${data.name}, you're O`;   
+    playerInfo1.info = `${data.name}, you're O.&nbsp;&nbsp;`;   
     $("#info1").innerHTML = playerInfo1.info; 
   };
 
   if (data.startPlayer === 'O') {    
-    playerInfo1.info = `${data.name}, you're X`;   
+    playerInfo1.info = `${data.name}, you're X.&nbsp;&nbsp;`;   
     $("#info1").innerHTML = playerInfo1.info; 
   };
 };
@@ -410,11 +410,28 @@ const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
       window.parent.postMessage('app-sleeps', "*");
       console.log('style.js: app-sleeps');
   };
-
-  // if (!info3Elel.innerText) {
-  //   window.parent.postMessage('app-sleeps', "*");  
-  //   console.log('app-sleeps');
-  // };
+  
 };
 
 setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
+
+
+// const centerInfo1 = () => {  
+//   console.log('test');
+//   if (document.querySelector('#info2').innerText === "") {
+//     document.querySelector('#info1and2container').classList.add('centerInfo1');
+//     console.log('conditional 1')
+//   };
+
+//   if (document.querySelector('#info2').innerHTML !== "") {
+//     document.querySelector('#info1and2container').classList.remove('centerInfo1');
+//     console.log('conditional 2');
+//   };
+// };
+
+// setTimeout( () => document.querySelector('#info1and2container').onchange = centerInfo1(), 200);
+
+
+
+
+

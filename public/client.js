@@ -420,9 +420,11 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 
 
-window.addEventListener("orientationchange", console.log('orientationchange'));
 
 
+window.addEventListener("orientationchange", function() {
+  console.log("the orientation of the device is now " + screen.orientation.angle);
+});
 
 
 

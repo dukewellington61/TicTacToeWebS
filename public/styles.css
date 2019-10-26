@@ -59,13 +59,9 @@ body {
 #info1and2container {
   display: flex;
   flex-direction: row;  
-  height: 1em !important;
+  height: 1.5em !important;
   justify-content: center;
 }
-
-/* .centerInfo1 {
-  justify-content: center !important;
-} */
 
 .info {
   font-size: 1em;

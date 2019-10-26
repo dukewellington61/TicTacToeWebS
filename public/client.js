@@ -416,20 +416,6 @@ const checkIfAppSleepsAfterTurnMobileScreenOnAgain = () => {
 setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 
-// const centerInfo1 = () => {  
-//   console.log('test');
-//   if (document.querySelector('#info2').innerText === "") {
-//     document.querySelector('#info1and2container').classList.add('centerInfo1');
-//     console.log('conditional 1')
-//   };
-
-//   if (document.querySelector('#info2').innerHTML !== "") {
-//     document.querySelector('#info1and2container').classList.remove('centerInfo1');
-//     console.log('conditional 2');
-//   };
-// };
-
-// setTimeout( () => document.querySelector('#info1and2container').onchange = centerInfo1(), 200);
 
 
 

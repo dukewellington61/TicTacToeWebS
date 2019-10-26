@@ -205,18 +205,18 @@ const messageWait = () => $("#info3").innerHTML = "Please wait for an opponent";
 const messageStart = () => $("#info3").innerHTML = "Two players connected.";
 
 const startPlayerInfo = data => {  
-  playerInfo1.info = `${data.name}, you're ${data.startPlayer}.&nbsp;&nbsp;`;  
+  playerInfo1.info = `${data.name}, you're ${data.startPlayer}.&nbsp`;  
   $("#info1").innerHTML = playerInfo1.info;
 };
 
 const secondPlayerInfo = data => {
   if (data.startPlayer === 'X') {    
-    playerInfo1.info = `${data.name}, you're O.&nbsp;&nbsp;`;   
+    playerInfo1.info = `${data.name}, you're O.&nbsp`;   
     $("#info1").innerHTML = playerInfo1.info; 
   };
 
   if (data.startPlayer === 'O') {    
-    playerInfo1.info = `${data.name}, you're X.&nbsp;&nbsp;`;   
+    playerInfo1.info = `${data.name}, you're X.&nbsp`;   
     $("#info1").innerHTML = playerInfo1.info; 
   };
 };
@@ -337,7 +337,7 @@ window.addEventListener('message', msg => {
 
 socket.on('push', () => {
   viewTikTakToe();
-  setTimeout( () =>  createPlayerNameInputField(), 200);
+  setTimeout( () => createPlayerNameInputField(), 200);
 });
 
 socket.on('hide-start-button', () => hideStartButton());

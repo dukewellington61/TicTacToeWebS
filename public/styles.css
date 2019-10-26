@@ -13,6 +13,12 @@ body {
   background-color: rgba(0,0,0,0);
 }
 
+@media only screen and (min-device-width: 598px) and (max-device-width: 750px) {
+  body {
+    flex-direction: row !important;
+  }
+}
+
 #TikTakToe {
   margin: 0 auto;
   background-color: rgba(0,0,0,0);

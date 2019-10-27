@@ -129,6 +129,10 @@ p {
   margin-left: 2em;
 }
 
+.chat-area-portrait {
+  margin-left: 0 !important;
+}
+
 .chat-area-display-none {
   display: none !important;
 }
@@ -145,7 +149,7 @@ p {
   border-width: 2px;
   border-color: red;
   margin: 0 auto;
-  margin-top: 1.5em;
+  margin-top: 1em;
 }
 
 #message-input {

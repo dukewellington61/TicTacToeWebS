@@ -418,35 +418,27 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 
 
+const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;
 
-const checkMobileScreenOrientation = () => {
+const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90;
 
-  console.log('screen.width ' + screen.width);
+const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90;
 
-  console.log('screen.height ' + screen.height);
+const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0;
 
-  console.log("the orientation of the device is now " + screen.orientation.angle);
 
-  const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;
-
-  const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90;
-
-  const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90;
-
-  const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0;
-
-  console.log('mobilePortrait ' + mobilePortrait);
-  console.log('mobileLandscape ' + mobileLandscape);
-  console.log('tabletPortrait ' + tabletPortrait);
-  console.log('tabletLandscape ' + tabletLandscape);
-
+const checkMobileScreenOrientation = () => {    
 
   if (mobilePortrait || tabletPortrait) {    
     document.querySelector('body').classList.add('screen-in-portrait-mode');
     sendHeightToParentWindow();
+    document.querySelector('#chat-area').classList.add('chat-area-portrait');
   };
 
-  if (mobileLandscape || tabletLandscape) document.querySelector('body').classList.remove('screen-in-portrait-mode');
+  if (mobileLandscape || tabletLandscape) {
+    document.querySelector('body').classList.remove('screen-in-portrait-mode');
+    document.querySelector('#chat-area').classList.remove('chat-area-portrait');
+  };
 };
 
 window.addEventListener("orientationchange", () => checkMobileScreenOrientation());

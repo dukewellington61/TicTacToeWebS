@@ -418,16 +418,16 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 
 
-const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;
 
-const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90;
+const checkMobileScreenOrientation = () => {  
 
-const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90;
+  const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;
 
-const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0;
+  const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90;
 
+  const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90;
 
-const checkMobileScreenOrientation = () => {    
+  const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0;
 
   if (mobilePortrait || tabletPortrait) {    
     document.querySelector('body').classList.add('screen-in-portrait-mode');

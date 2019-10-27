@@ -424,6 +424,10 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 window.addEventListener("orientationchange", function() {
 
+  console.log('screen.width ' + screen.width);
+
+  console.log('screen.height ' + screen.height);
+
   console.log("the orientation of the device is now " + screen.orientation.angle);
 
   if (screen.height > screen.width) {
@@ -438,7 +442,7 @@ window.addEventListener("orientationchange", function() {
   };
 
   if (screen.width > screen.height) {
-    
+
     if (screen.orientation.angle === 90) {
       document.querySelector('body').classList.add('screen-in-portrait-mode');
       sendHeightToParentWindow();
@@ -451,9 +455,7 @@ window.addEventListener("orientationchange", function() {
 
 });
 
-console.log(screen.width);
 
-console.log(screen.height);
 
 
 

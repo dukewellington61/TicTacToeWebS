@@ -438,7 +438,13 @@ window.addEventListener("orientationchange", function() {
 
   const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0;
 
-  if (mobilePortrait || tabletPortrait) {
+  console.log('mobilePortrait ' + mobilePortrait);
+  console.log('mobileLandscape ' + mobileLandscape);
+  console.log('tabletPortrait ' + tabletPortrait);
+  console.log('tabletLandscape ' + tabletLandscape);
+
+
+  if (mobilePortrait || tabletPortrait) {    
     document.querySelector('body').classList.add('screen-in-portrait-mode');
     sendHeightToParentWindow();
   };

@@ -11,6 +11,7 @@ body {
   display: flex;
   flex-direction: row;
   background-color: rgba(0,0,0,0);
+  justify-content: space-around;
 }
 
 .screen-in-portrait-mode {
@@ -55,8 +56,8 @@ body {
 
 @media only screen and (min-width: 799px) {
   .button {
-    height: 27.5vh;
-    width: 22.5vw;
+    height: 2.5em;
+    width: 2.5em;
   }
 }
 

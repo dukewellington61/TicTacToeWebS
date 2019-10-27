@@ -430,28 +430,20 @@ window.addEventListener("orientationchange", function() {
 
   console.log("the orientation of the device is now " + screen.orientation.angle);
 
-  if (screen.height > screen.width) {
+  const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;
 
-    if (screen.orientation.angle === 0) {
-      document.querySelector('body').classList.add('screen-in-portrait-mode');
-      sendHeightToParentWindow();
-    };
-    
-    if (screen.orientation.angle === 90) document.querySelector('body').classList.remove('screen-in-portrait-mode');
+  const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90;
 
+  const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90;
+
+  const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0;
+
+  if (mobilePortrait || tabletPortrait) {
+    document.querySelector('body').classList.add('screen-in-portrait-mode');
+    sendHeightToParentWindow();
   };
 
-  if (screen.width > screen.height) {
-
-    if (screen.orientation.angle === 90) {
-      document.querySelector('body').classList.add('screen-in-portrait-mode');
-      sendHeightToParentWindow();
-    };
-    
-    if (screen.orientation.angle === 0) document.querySelector('body').classList.remove('screen-in-portrait-mode');
-
-  };
-
+  if (mobileLandscape || tabletLandscape) document.querySelector('body').classList.remove('screen-in-portrait-mode');
 
 });
 

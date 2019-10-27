@@ -126,6 +126,7 @@ p {
 #chat-area {
   display: flex;
   flex-direction: column;
+  margin-left: 2em;
 }
 
 .chat-area-display-none {
@@ -144,7 +145,7 @@ p {
   border-width: 2px;
   border-color: red;
   margin: 0 auto;
-  margin-top: 1em;
+  margin-top: 1.5em;
 }
 
 #message-input {

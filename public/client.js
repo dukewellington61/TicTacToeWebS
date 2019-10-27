@@ -423,16 +423,37 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 
 window.addEventListener("orientationchange", function() {
+
   console.log("the orientation of the device is now " + screen.orientation.angle);
-  if (screen.orientation.angle === 0) {
-    document.querySelector('body').classList.add('screen-in-portrait-mode');
-    sendHeightToParentWindow();
+
+  if (screen.height > screen.width) {
+
+    if (screen.orientation.angle === 0) {
+      document.querySelector('body').classList.add('screen-in-portrait-mode');
+      sendHeightToParentWindow();
+    };
+    
+    if (screen.orientation.angle === 90) document.querySelector('body').classList.remove('screen-in-portrait-mode');
+
   };
-  
-  if (screen.orientation.angle === 90) document.querySelector('body').classList.remove('screen-in-portrait-mode');
+
+  if (screen.width > screen.height) {
+    
+    if (screen.orientation.angle === 90) {
+      document.querySelector('body').classList.add('screen-in-portrait-mode');
+      sendHeightToParentWindow();
+    };
+    
+    if (screen.orientation.angle === 0) document.querySelector('body').classList.remove('screen-in-portrait-mode');
+
+  };
+
 
 });
 
+console.log(screen.width);
+
+console.log(screen.height);
 
 
 

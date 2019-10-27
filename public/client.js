@@ -75,6 +75,7 @@ const createPlayerNameInputField = () => {
       socket.emit('new-user', nameInputElement.value);     
       displayChatArea();
       sendHeightToParentWindow();
+      checkMobileScreenOrientation();
     };
   });   
 };
@@ -418,11 +419,7 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 
 
-
-
-
-
-window.addEventListener("orientationchange", function() {
+const checkMobileScreenOrientation = () => {
 
   console.log('screen.width ' + screen.width);
 
@@ -450,8 +447,15 @@ window.addEventListener("orientationchange", function() {
   };
 
   if (mobileLandscape || tabletLandscape) document.querySelector('body').classList.remove('screen-in-portrait-mode');
+};
 
-});
+window.addEventListener("orientationchange", () => checkMobileScreenOrientation());
+
+
+
+  
+
+
 
 
 

@@ -423,13 +423,13 @@ const checkMobileScreenOrientation = () => {
 
   console.log('screen.orientation.angle: ' + screen.orientation.angle);
 
-  const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0 || 180;
+  const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0 || screen.orientation.angle === 180;
 
-  const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90 || 270;
+  const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90 || screen.orientation.angle === 270;
 
-  const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90 || 270;
+  const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90 || screen.orientation.angle === 270;
 
-  const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0 || 180;
+  const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0 || screen.orientation.angle === 180;
 
   if (mobilePortrait || tabletPortrait) {    
     document.querySelector('body').classList.add('screen-in-portrait-mode');

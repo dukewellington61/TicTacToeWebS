@@ -421,6 +421,8 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 const checkMobileScreenOrientation = () => {  
 
+  console.log('screen.orientation.angle: ' + screen.orientation.angle);
+
   const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;
 
   const mobileLandscape = screen.height < screen.width && screen.orientation.angle === 90;

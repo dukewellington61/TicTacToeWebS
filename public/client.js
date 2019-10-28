@@ -75,7 +75,7 @@ const createPlayerNameInputField = () => {
       socket.emit('new-user', nameInputElement.value);     
       displayChatArea();
       sendHeightToParentWindow();
-      checkMobileScreenOrientation();
+      // checkMobileScreenOrientation();
     };
   });   
 };

@@ -19,7 +19,11 @@ body {
 }
 
 #TikTakToe {
-  margin: 0 auto;
+  /* margin: 0 auto; */
+  display: flex;
+  position: static;
+  /* flex-direction: column; */
+  justify-content: center;
   background-color: rgba(0,0,0,0);
 }
 
@@ -126,7 +130,7 @@ p {
 #chat-area {
   display: flex;
   flex-direction: column;
-  margin-left: 2em;
+  /* margin-left: 2em; */
 }
 
 .chat-area-portrait {

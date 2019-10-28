@@ -27,12 +27,6 @@ body {
   background-color: rgba(0,0,0,0);
 }
 
-@media only screen and (min-width: 528px) {
-  #TikTakToe {
-    flex-direction: row;
-  }
-} 
-
 #gamefield {  
   width: 15.8em;  
 }

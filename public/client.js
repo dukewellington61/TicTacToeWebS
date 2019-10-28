@@ -419,9 +419,7 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 
 
-const checkMobileScreenOrientation = () => {  
-
-  console.log('screen.orientation.angle: ' + screen.orientation.angle);
+const checkMobileScreenOrientation = () => {    
 
   const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0 || screen.orientation.angle === 180;
 
@@ -430,6 +428,12 @@ const checkMobileScreenOrientation = () => {
   const tabletPortrait = screen.height > screen.width && screen.orientation.angle === 90 || screen.orientation.angle === 270;
 
   const tabletLandscape = screen.height < screen.width && screen.orientation.angle === 0 || screen.orientation.angle === 180;
+
+  console.log('screen.orientation.angle: ' + screen.orientation.angle);
+  console.log('mobilePortrait: ' + mobilePortrait);
+  console.log('mobileLandscape: ' + mobileLandscape);
+  console.log('tabletPortrait: ' + tabletPortrait);
+  console.log('tabletLandscape: ' + tabletLandscape);
 
   if (mobilePortrait || tabletPortrait) {    
     document.querySelector('body').classList.add('screen-in-portrait-mode');

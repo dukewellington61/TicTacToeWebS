@@ -19,7 +19,7 @@ body {
 }
 
 #TikTakToe {
-  /* margin: 0 auto; */
+  margin: 0 auto;
   display: flex;
   position: static;
   /* flex-direction: column; */
@@ -128,6 +128,7 @@ p {
 /* chat area */
 
 #chat-area {
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   /* margin-left: 2em; */

@@ -454,7 +454,7 @@ const sendAppHeightToParentIfMobileScreenPortraitMode = () => {
 
   const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;  
 
-  if (mobilePortrait) console.log('mobilePortrait');
+  if (mobilePortrait) setTimeout( () => sendHeightToParentWindow(), 3000);
 };
   
 

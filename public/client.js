@@ -450,9 +450,7 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 // window.addEventListener("orientationchange", () => checkMobileScreenOrientation());
 
 
-const sendAppHeightToParentIfMobileScreenPortraitMode = () => {
-
-  alert('screen.orientation.angle: ' + screen.orientation.angle);
+const sendAppHeightToParentIfMobileScreenPortraitMode = () => {  
 
   const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;   
 

@@ -452,11 +452,13 @@ setInterval(checkIfAppSleepsAfterTurnMobileScreenOnAgain, 1000);
 
 const sendAppHeightToParentIfMobileScreenPortraitMode = () => {  
 
-  alert('screen.orientation.angle: ' + screen.orientation.angle);
+  // alert('screen.orientation.angle: ' + screen.orientation.angle);
 
-  const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;  
+  // const mobilePortrait = screen.height > screen.width && screen.orientation.angle === 0;  
 
-  if (mobilePortrait) setTimeout( () => sendHeightToParentWindow(), 500);
+  // if (mobilePortrait) setTimeout( () => sendHeightToParentWindow(), 500);
+
+  setTimeout( () => sendHeightToParentWindow(), 500);
 };  
 
 window.addEventListener("orientationchange", () => sendAppHeightToParentIfMobileScreenPortraitMode());

@@ -339,7 +339,7 @@ window.addEventListener('message', msg => {
 socket.on('push', () => {
   viewTikTakToe();
   setTimeout( () => createPlayerNameInputField(), 200);
-  sendHeightToParentWindow();
+  // sendHeightToParentWindow();
 });
 
 socket.on('hide-start-button', () => hideStartButton());

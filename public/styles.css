@@ -130,12 +130,13 @@ p {
 #chat-area {
   margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  /* margin-left: 2em; */
+  flex-direction: column; 
 }
 
-.chat-area-portrait {
-  margin-left: 0 !important;
+@media only screen and (min-width: 1200px) {
+  #chat-area {
+    margin-left: 2em;
+  }
 }
 
 .chat-area-display-none {

@@ -28,14 +28,15 @@ body {
 }
 
 #gamefield {  
-  width: 15.8em;  
+  /* width: 15.8em;   */
+  width: max-content;
 }
 
-@media only screen and (min-width: 598px) {
+/* @media only screen and (min-width: 598px) {
   #gamefield {  
     width: 30em;  
   }
-}
+} */
 
 .button {
   height: 1.75em;

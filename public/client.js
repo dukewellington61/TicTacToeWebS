@@ -63,7 +63,7 @@ const createPlayerNameInputField = () => {
   ticTacToeGameField.appendChild(nameInputElement);   
   nameInputElement.maxLength = 10;    
 
-  setTimeout( () => positionElement(nameInputElement), 1000);
+  positionElement(nameInputElement);
 
   
   nameInputElement.addEventListener('keyup', e => {

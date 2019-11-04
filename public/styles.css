@@ -1,11 +1,20 @@
-@media only screen and (min-width: 799px) {
+/* @media only screen and (min-width: 799px) {
   html {  
     height: 40em;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-} 
+}  */
+
+
+html {  
+  height: 40em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 body {
   display: flex;
@@ -33,7 +42,8 @@ body {
 
 @media only screen and (min-width: 598px) {
   #gamefield {  
-    width: max-content;  }
+    width: max-content;
+  }
 }
 
 .button {

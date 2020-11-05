@@ -1,12 +1,18 @@
-@media only screen and (min-width: 598px) {
-  html {  
+html {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* @media only screen and (min-width: 598px) {
+  html {
     height: 40em;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-} 
-
+} */
 
 /* html {  
   height: 40em;
@@ -15,11 +21,10 @@
   align-items: center;
 } */
 
-
 body {
   display: flex;
   flex-direction: row;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
   justify-content: space-around;
 }
 
@@ -33,15 +38,15 @@ body {
   position: static;
   /* flex-direction: column; */
   justify-content: center;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
-#gamefield {  
-  width: 15.8em;   
+#gamefield {
+  width: 15.8em;
 }
 
 @media only screen and (min-width: 598px) {
-  #gamefield {  
+  #gamefield {
     width: max-content;
   }
 }
@@ -51,7 +56,7 @@ body {
   width: 1.75em;
   vertical-align: bottom;
   font-size: 3em;
-  padding: 0; 
+  padding: 0;
 }
 
 @media only screen and (min-width: 598px) {
@@ -70,7 +75,7 @@ body {
 
 #info1and2container {
   display: flex;
-  flex-direction: row;  
+  flex-direction: row;
   height: 1.5em !important;
   justify-content: center;
 }
@@ -82,12 +87,12 @@ body {
   text-align: center;
 }
 
-#info1 {  
+#info1 {
   text-align: center;
 }
 
 #info2 {
-  color: coral; 
+  color: coral;
 }
 
 p {
@@ -106,7 +111,7 @@ p {
   }
 }
 
-#player-name-input {  
+#player-name-input {
   background: black;
   opacity: 0.5;
   text-align: center;
@@ -127,13 +132,12 @@ p {
   display: none;
 }
 
-
 /* chat area */
 
 #chat-area {
   margin: 0 auto;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 @media only screen and (min-width: 1150px) {
